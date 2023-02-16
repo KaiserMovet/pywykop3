@@ -3,6 +3,7 @@
 [![Pylint](https://github.com/KaiserMovet/pywykop3/actions/workflows/pylint.yml/badge.svg)](https://github.com/KaiserMovet/pywykop3/actions/workflows/pylint.yml)
 [![Pytest](https://github.com/KaiserMovet/pywykop3/actions/workflows/python-package.yml/badge.svg)](https://github.com/KaiserMovet/pywykop3/actions/workflows/python-package.yml)
 [![Upload Python Package](https://github.com/KaiserMovet/pywykop3/actions/workflows/python-publish.yml/badge.svg)](https://github.com/KaiserMovet/pywykop3/actions/workflows/python-publish.yml)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ## Usage
 
