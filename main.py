@@ -1,6 +1,4 @@
 import sys
-from datetime import datetime
-from pprint import pprint
 
 import logger
 from pywykop3 import WykopAPI
