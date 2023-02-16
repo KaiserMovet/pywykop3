@@ -6,7 +6,7 @@ setup(
     version="0.1",
     license="MIT",
     description="Wykop v2 REST API Client",
-    long_description="Wykop v2 REST API Client",
+    long_description_content_type="text/markdown",
     author="Mateusz Rynkiewicz",
     author_email="rynkiewiczmate@gmail.com",
     url="https://github.com/KaiserMovet/pywykop3",
