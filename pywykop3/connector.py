@@ -1,7 +1,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, NamedTuple
+from typing import Dict, List
 
 import requests
 from requests.compat import urljoin
@@ -101,6 +101,8 @@ class WykopConnector:
         params: Dict | None = None,
         timeout: int = 10,
     ) -> WykopResponse:
+        # Remove trailing slash if necessary
+        endpoint = endpoint.lstrip("/")
         url = urljoin(self.URL, endpoint)
         logging.info(
             "Executing %s - %s, params: %s, data: %s",
