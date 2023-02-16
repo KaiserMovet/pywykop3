@@ -13,7 +13,7 @@ def main() -> None:
 
     api = WykopAPI(refresh_token=sys.argv[3])
     print(f"{api.connector._token=}")
-    pprint(api.get_entries())
+    pprint(api.post_entries("xddddddddddddd"))
 
 
 if __name__ == "__main__":
