@@ -7,6 +7,7 @@ from .utils import NotEmptyDict
 
 User = NewType("User", Dict)
 Entry = NewType("Entry", Dict)
+Comment = NewType("Entry", Dict)
 
 
 class ApiException(Exception):
@@ -172,7 +173,8 @@ class WykopAPI:
             "author", "link", "entry". Defaults to "all".
             year (int | None, optional): Rok. Defaults to None.
             month (int | None, optional): Miesiąc. Defaults to None.
-            page_count (int, optional): Liczba stron do pobrania. Defaults to 1.
+            page_count (int, optional): Liczba stron do pobrania.
+            Podaj -1, żeby pobrać wszystko. Defaults to 1.
 
         Returns:
             List: Lista wpisów i znalezisk
@@ -314,7 +316,8 @@ class WykopAPI:
             last_update (int, optional): Pokaż wyniki z ostatnich godzin
             [1, 2, 3, 6, 12, 24]. Filtr dostępny tylko wraz z filtrem gorące.
             Defaults to 12.
-            page_count (int, optional): Liczba stron do pobrania. Defaults to 1.
+            page_count (int, optional): Liczba stron do pobrania.
+            Podaj -1, żeby pobrać wszystko. Defaults to 1.
             page (int | str | None, optional): Numer strony do pobrania.
             Defaults to None.
             category (str | None, optional): Kategoria. Defaults to None.
@@ -531,6 +534,16 @@ class WykopAPI:
     def get_entries_newer(
         self, entry_id: int, category: str | None = None
     ) -> int:
+        """
+        Zwraca liczbę nowszych wpisów.
+
+        Args:
+            entry_id (int): Identyfikator wpisu
+            category (str | None, optional): Kategoria. Defaults to None.
+
+        Returns:
+            int: Liczba nowszych wpisów.
+        """
         endpoint = f"/entries/{entry_id}/newer"
         params = NotEmptyDict()
         params["category"] = category
@@ -541,4 +554,226 @@ class WykopAPI:
                 404: "Nie odnaleziono wpisu.",
             },
         )
+        return res.data["count"]  # type: ignore
+
+    # Mikroblog - Komentarz
+
+    def get_entry_comments(
+        self, entry_id: int, page: int = 1, page_count: int = 1
+    ) -> List[Comment]:
+        """
+        Lista komentarzy do wpisu z mikrobloga
+
+        Args:
+            entry_id (int): Identyfikator wpisu
+            page (int, optional): Numer strony do pobrania.
+            Defaults to 1.
+            page_count (int, optional): Liczba stron do pobrania.
+            Podaj -1, żeby pobrać wszystko. Defaults to 1.
+
+        Returns:
+            List[Comment]: _description_
+        """
+
+        endpoint = f"entries/{entry_id}/comments"
+        res = self.connector.request_with_pagination(
+            Methods.GET, endpoint, page=page, page_count=page_count
+        )
+        self.raise_error_if_needed(res)
         return res.data  # type: ignore
+
+    def post_entry_comment(
+        self,
+        entry_id: int,
+        content: str,
+        embed: str | None = None,
+        photo: str | None = None,
+        adult: bool = False,
+    ) -> Comment:
+        """
+        Dodawanie nowego komentarza do wpisu na mikroblogu
+
+        Args:
+            entry_id (int): Identyfikator wpisu
+            content (str): Treść własna użytkownika. Treść może być pusta w
+            przypadku dodania innych multimediów.
+            W przypadku samej treści musi zawierać min. 5 znaków.
+            embed (str | None, optional): Unikatowy identyfikator pliku.
+            Defaults to None.
+            photo (str | None, optional): Załącznik użytkownika. W celu
+            dodania należy podać "key" pliku z media/photo.
+            Akceptowane są tylko pliki przesłane jako typ comments.
+            Defaults to None.
+            adult (bool, optional): Komentarz tylko dla dorosłych.
+            Defaults to False.
+
+        Returns:
+            Comment: Dodany komentarz
+        """
+        endpoint = f"entries/{entry_id}/comments"
+
+        data = NotEmptyDict()
+        data["content"] = content
+        data["embed"] = embed
+        data["photo"] = photo
+        data["adult"] = adult
+        res = self.connector.request(Methods.POST, endpoint, data=data)
+        self.raise_error_if_needed(
+            res,
+            {
+                404: "Nie odnaleziono znaleziska lub komentarza",
+                409: "Wystąpił błąd podczas walidacji formularza.",
+            },
+        )
+        return res.data  # type: ignore
+
+    def get_entry_comment(self, entry_id: int, comment_id: int) -> Comment:
+        """
+        Zwraca komentarz z mikroblogu.
+
+        Args:
+            entry_id (int): Identyfikator wpisu
+            comment_id (int): Identyfikator komentarza
+
+        Returns:
+            Comment: Komentarz z mikroblogu
+        """
+        endpoint = f"entries/{entry_id}/comments/{comment_id}"
+        res = self.connector.request(Methods.GET, endpoint)
+        self.raise_error_if_needed(
+            res,
+            {
+                404: "Nie odnaleziono wpisu lub komentarza.",
+            },
+        )
+        return res.data  # type: ignore
+
+    def put_entry_comment(
+        self,
+        entry_id: int,
+        comment_id: int,
+        content: str,
+        embed: str | None = None,
+        photo: str | None = None,
+        adult: bool = False,
+    ) -> Comment:
+        """
+        Dodawanie nowego komentarza do wpisu na mikroblogu.
+        Można modyfikwać tylko własne komentarze.
+        Autor może modyfikować komentarz 15 minut od daty dodania.
+
+        Args:
+            entry_id (int): Identyfikator wpisu
+            comment_id (int): Identyfikator komentarza
+            content (str): Treść własna użytkownika. Treść może być pusta w
+            przypadku dodania innych multimediów.
+            W przypadku samej treści musi zawierać min. 5 znaków.
+            embed (str | None, optional): Unikatowy identyfikator pliku.
+            Defaults to None.
+            photo (str | None, optional): Załącznik użytkownika. W celu
+            dodania należy podać "key" pliku z media/photo.
+            Akceptowane są tylko pliki przesłane jako typ comments.
+            Defaults to None.
+            adult (bool, optional): Komentarz tylko dla dorosłych.
+            Defaults to False.
+
+        Returns:
+            Comment: Zmodyfikowany komentarz
+        """
+        endpoint = f"entries/{entry_id}/comments/{comment_id}"
+
+        data = NotEmptyDict()
+        data["content"] = content
+        data["embed"] = embed
+        data["photo"] = photo
+        data["adult"] = adult
+        res = self.connector.request(Methods.PUT, endpoint, data=data)
+        self.raise_error_if_needed(
+            res,
+            {
+                400: "Brak uprawnień do modyfikacji komentarza.",
+                404: "Nie odnaleziono wpisu lub komentarza.",
+                409: "Wystąpił błąd podczas walidacji formularza.",
+            },
+        )
+        return res.data  # type: ignore
+
+    def delete_entry_comment(self, entry_id: int, comment_id: int) -> None:
+        """
+        Usuwanie komentarza
+        Autor komentarza może go usunąć 15 minut od daty
+        dodania lub autor wpisu przez cały czas.
+
+        Args:
+            entry_id (int): Identyfikator wpisu
+            comment_id (int): Identyfikator komentarza
+        """
+        endpoint = f"entries/{entry_id}/comments/{comment_id}"
+        res = self.connector.request(Methods.DELETE, endpoint)
+        self.raise_error_if_needed(
+            res,
+            {
+                400: "Brak uprawnień do usunięcia komentarza.",
+                404: "Nie odnaleziono wpisu lub komentarza.",
+            },
+        )
+
+    def get_entry_comment_votes(
+        self, entry_id: int, comment_id: int
+    ) -> List[User]:
+        """
+        Pobiera użytkowników którzy głosowali na komentarz z mikroblogu.
+
+        Args:
+            entry_id (int): Identyfikator wpisu
+            comment_id (int): Identyfikator komentarza
+
+        Returns:
+            List[User]: Lista głosujących użytkowników
+        """
+        endpoint = f"entries/{entry_id}/comments/{comment_id}/votes"
+        res = self.connector.request(Methods.GET, endpoint)
+        self.raise_error_if_needed(
+            res,
+            {
+                404: "Nie odnaleziono wpisu lub komentarza.",
+            },
+        )
+        return res.data  # type: ignore
+
+    def post_entry_comment_vote(self, entry_id: int, comment_id: int) -> None:
+        """
+        Głosowanie na wpis
+
+        Args:
+            entry_id (int): Identyfikator wpisu
+            comment_id (int): Identyfikator komentarza
+        """
+        endpoint = f"entries/{entry_id}/comments/{comment_id}/votes"
+        res = self.connector.request(Methods.POST, endpoint)
+        self.raise_error_if_needed(
+            res,
+            {
+                400: "Użytkownik głosował wcześniej na komentarz"
+                "lub jest jego autorem.",
+                404: "Nie odnaleziono wpisu lub komentarza.",
+            },
+        )
+
+    def delete_entry_comment_vote(self, entry_id: int, comment_id: int) -> None:
+        """
+        Cofnięcie głosu na komentarz
+
+        Args:
+            entry_id (int): Identyfikator wpisu
+            comment_id (int): Identyfikator komentarza
+        """
+        endpoint = f"entries/{entry_id}/comments/{comment_id}/votes"
+        res = self.connector.request(Methods.DELETE, endpoint)
+        self.raise_error_if_needed(
+            res,
+            {
+                400: "Użytkownik nie głosował wcześniej na komentarz.",
+                404: "Nie odnaleziono wpisu lub komentarza.",
+            },
+        )

@@ -3,14 +3,14 @@ from unittest import mock
 
 import pytest
 
-from pywykop3 import Methods, WykopAPI, WykopConnector, WykopResponse
+from pywykop3 import Methods, WykopAPI
 
 
 class DummyWykopConnector:
     def __init__(self) -> None:
         ...
 
-    request: mock.Mock = mock.Mock()
+    request: mock.Mock = mock.MagicMock()
 
     def request_with_pagination(self, *args, **kwargs) -> mock.Mock:
         return self.request(*args, **kwargs)
@@ -78,6 +78,26 @@ class TestMethods:
             ("post_entry_vote", Methods.POST),
             ("delete_entry_vote", Methods.DELETE),
             ("get_entries_newer", Methods.GET),
+        ],
+    )
+    def test_mikroblog_comments_methods(
+        self, method_name: str, expected_method: Methods
+    ) -> None:
+        self.check_method(
+            method_name=method_name, expected_method=expected_method
+        )
+
+    @pytest.mark.parametrize(
+        "method_name,expected_method",
+        [
+            ("get_entry_comments", Methods.GET),
+            ("post_entry_comment", Methods.POST),
+            ("get_entry_comment", Methods.GET),
+            ("put_entry_comment", Methods.PUT),
+            ("delete_entry_comment", Methods.DELETE),
+            ("get_entry_comment_votes", Methods.GET),
+            ("post_entry_comment_vote", Methods.POST),
+            ("delete_entry_comment_vote", Methods.DELETE),
         ],
     )
     def test_mikroblog_methods(

@@ -145,15 +145,21 @@ class WykopConnector:
             if page:
                 params["page"] = page
             res = self.request(method, endpoint, data, params, timeout)
+            print(f"{res.pagination=}")
             last_response = res
             all_data += res.data  # type: ignore
+
+            # Break if there is no more data
+            if not res.data:
+                break
             # Break if wrong status code
             if 200 > res.code or res.code > 299:
                 break
             # Get next page
-            if "next" in res.pagination:
+            if res.pagination.get("next"):
                 page = res.pagination["next"]
             elif page is None:
+                # If page is none, and user is not logged in
                 page = 2
             elif isinstance(page, int):
                 page += 1
