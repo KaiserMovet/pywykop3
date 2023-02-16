@@ -1,5 +1,6 @@
 import logging
-from logging.handlers import RotatingFileHandler
+
+# from logging.handlers import RotatingFileHandler
 
 FORMAT = "%(asctime)s - %(levelname)-8s %(filename)s/%(funcName)s : %(message)s"
 DATEFMT = "%d/%m/%Y %I:%M:%S"
@@ -30,7 +31,7 @@ def get_colored_formatter() -> logging.Formatter:
         def __init__(self, fmt, datefmt):
             super().__init__(fmt=fmt, datefmt=datefmt)
             self.fmt = fmt
-            self.FORMATS = {
+            self.FORMATS = {  # pylint: disable=invalid-name
                 logging.DEBUG: self.grey + self.fmt + self.reset,
                 logging.INFO: self.blue + self.fmt + self.reset,
                 logging.WARNING: self.yellow + self.fmt + self.reset,
@@ -53,8 +54,8 @@ def init() -> logging.Logger:
     logger = logging.getLogger("root")
     logger.setLevel(logging.INFO)
 
-    consoleHandler = logging.StreamHandler()
-    consoleHandler.setLevel(logging.INFO)
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
 
     # log_file = "log.txt"
     # fileHandler = RotatingFileHandler(
@@ -67,10 +68,10 @@ def init() -> logging.Logger:
     # )
     # fileHandler.setLevel(logging.INFO)
 
-    consoleHandler.setFormatter(get_colored_formatter())
+    console_handler.setFormatter(get_colored_formatter())
     # fileHandler.setFormatter(get_formatter())
 
-    logger.addHandler(consoleHandler)
+    logger.addHandler(console_handler)
     # logger.addHandler(fileHandler)
 
     return logger

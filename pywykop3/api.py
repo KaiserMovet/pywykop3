@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 from typing import Dict, List, NewType
 
@@ -7,7 +6,7 @@ from .utils import NotEmptyDict
 
 User = NewType("User", Dict)
 Entry = NewType("Entry", Dict)
-Comment = NewType("Entry", Dict)
+Comment = NewType("Comment", Dict)
 
 
 class ApiException(Exception):
