@@ -80,7 +80,7 @@ class TestMethods:
             ("get_entries_newer", Methods.GET),
         ],
     )
-    def test_mikroblog_comments_methods(
+    def test_mikroblog_methods(
         self, method_name: str, expected_method: Methods
     ) -> None:
         self.check_method(
@@ -100,7 +100,7 @@ class TestMethods:
             ("delete_entry_comment_vote", Methods.DELETE),
         ],
     )
-    def test_mikroblog_methods(
+    def test_mikroblog_comments_methods(
         self, method_name: str, expected_method: Methods
     ) -> None:
         self.check_method(
