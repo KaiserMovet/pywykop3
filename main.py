@@ -12,10 +12,8 @@ def main() -> None:
     # print(api.connect())
 
     api = WykopAPI(refresh_token=sys.argv[3])
-    # print(f"{api.connector._token=}")
-    pprint(
-        api.get_tag_newer("heheszki", date=datetime(2023, 1, 15, 12, 12, 12))
-    )
+    print(f"{api.connector._token=}")
+    pprint(api.get_entries())
 
 
 if __name__ == "__main__":

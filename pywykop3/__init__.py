@@ -1,2 +1,2 @@
 from .api import WykopAPI
-from .connector import WykopConnector
+from .connector import Methods, WykopConnector, WykopResponse
