@@ -3,7 +3,7 @@ from distutils.core import setup  # pylint: disable=deprecated-module
 setup(
     name="pywykop3",
     packages=["pywykop3"],
-    version="0.1",
+    version="0.2",
     license="MIT",
     description="Wykop v2 REST API Client",
     long_description_content_type="text/markdown",
