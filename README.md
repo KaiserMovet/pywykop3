@@ -1,5 +1,7 @@
 # pywykop3
 
+Python REST API Client for Wykop2 (via api v3)
+
 [![Pylint](https://github.com/KaiserMovet/pywykop3/actions/workflows/pylint.yml/badge.svg)](https://github.com/KaiserMovet/pywykop3/actions/workflows/pylint.yml)
 [![Pytest](https://github.com/KaiserMovet/pywykop3/actions/workflows/python-package.yml/badge.svg)](https://github.com/KaiserMovet/pywykop3/actions/workflows/python-package.yml)
 [![Upload Python Package](https://github.com/KaiserMovet/pywykop3/actions/workflows/python-publish.yml/badge.svg)](https://github.com/KaiserMovet/pywykop3/actions/workflows/python-publish.yml)
