@@ -11,6 +11,8 @@ Welcome to pywykop3's documentation!
    :caption: Contents:
 
    api
+   connector
+   utils
 
 Readme File
 ===========

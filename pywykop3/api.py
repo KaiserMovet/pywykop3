@@ -10,12 +10,57 @@ Comment = NewType("Comment", Dict)
 
 
 class ApiException(Exception):
-    def __init__(self, code, msg) -> None:
+    """
+    This exception is raised by :class:`WykopAPI` when code of request is other than 2xx.
+    Exception has 2 additional attributes:
+
+        - stacode - response code of request
+        - api_msg - message
+    """
+
+    def __init__(self, code: int, api_msg: str) -> None:
+        """
+        Api Exception
+
+        Args:
+            code (int): code of request
+            api_msg (str): message
+        """
         self.code = code
-        super().__init__(f"CODE {self.code}: {msg}")
+        self.api_msg = api_msg
+        super().__init__(f"CODE {self.code}: {api_msg}")
 
 
 class WykopAPI:
+    """
+    Main interface to communicate with Wykop
+    You need to provide
+
+        - connector
+
+        OR
+
+        - key
+        - secret
+
+        OR
+
+        - refresh token
+
+    If you pass key and secret, Wykop will provide information as
+    for non-logged in users.
+    If you refresh_token, Wykop will provide information as
+    for logged in users.
+
+    Args:
+        connector (WykopConnector | None, optional): Connector object. Can be safely ignored.
+            Defaults to None.
+        key (str | None, optional): Key. Defaults to None.
+        secret (str | None, optional): Secret. Defaults to None.
+        refresh_token (str | None, optional): Refresh token. To obtain it,
+            see :meth:`connect()` method. Defaults to None.
+    """
+
     def __init__(
         self,
         connector: WykopConnector | None = None,
@@ -23,7 +68,6 @@ class WykopAPI:
         secret: str | None = None,
         refresh_token: str | None = None,
     ) -> None:
-
         self.connector = connector or WykopConnector(key, secret, refresh_token)
 
     def connect(self) -> str:

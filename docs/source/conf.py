@@ -19,7 +19,12 @@ release = "0.4"
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon", "sphinx_mdinclude"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+    "sphinx_mdinclude",
+    "sphinx.ext.viewcode",
+]
 
 
 templates_path = ["_templates"]
