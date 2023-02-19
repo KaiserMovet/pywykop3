@@ -10,8 +10,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          path: custom_path_to_repo
 
       - name: Get version and version code
         uses: xom9ikk/version-by-tag@v1
