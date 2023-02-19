@@ -119,8 +119,8 @@ class WykopConnector:
             headers=self.header,
             timeout=timeout,
         )
-
-        res_json = res.json()
+        print(f"{res.text=}")
+        res_json = res.json() if res.text else None
         res_data = res_json.get("data", []) if res_json else []
         res_error = res_json.get("error", {}) if res_json else {}
         res_pagination = res_json.get("pagination", {}) if res_json else {}

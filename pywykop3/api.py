@@ -390,7 +390,7 @@ class WykopAPI:
         )
         return res.data  # type: ignore
 
-    def post_entries(
+    def post_entry(
         self,
         content: str,
         photo: str | None = None,
@@ -434,7 +434,7 @@ class WykopAPI:
         )
         return res.data  # type: ignore
 
-    def get_entry_by_id(self, entry_id: int) -> Dict:
+    def get_entry_by_id(self, entry_id: int) -> Entry:
         """
         Zwraca wpisz z mikrobloga.
 
@@ -454,7 +454,7 @@ class WykopAPI:
         )
         return res.data  # type: ignore
 
-    def put_entries(
+    def put_entry(
         self,
         entry_id: int,
         content: str,

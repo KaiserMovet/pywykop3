@@ -70,9 +70,9 @@ class TestMethods:
         "method_name,expected_method",
         [
             ("get_entries", Methods.GET),
-            ("post_entries", Methods.POST),
+            ("post_entry", Methods.POST),
             ("get_entry_by_id", Methods.GET),
-            ("put_entries", Methods.PUT),
+            ("put_entry", Methods.PUT),
             ("delete_entry_by_id", Methods.DELETE),
             ("get_entry_votes", Methods.GET),
             ("post_entry_vote", Methods.POST),
