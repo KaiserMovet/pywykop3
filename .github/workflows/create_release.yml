@@ -64,12 +64,10 @@ jobs:
       - name: Bump Version
         id: bump_version
         uses: ncipollo/semantic-version-action@v1
-        with:
-          tag: ${{ github.ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Show version
-        run: echo  ${{ steps.bump_version.outputs.tag }}
+        run: echo  ${{ steps.bump_version.outputs.major }}.${{ steps.bump_version.outputs.minor }}.${{ steps.bump_version.outputs.patch }}
       - name: NEW RELEASE - Update Version in setup.py
         run: |
           sed -i "s/version='[0-9].[0-9].[0-9]',/version='${{ steps.bump_version.outputs.tag }}',/" setup.py
