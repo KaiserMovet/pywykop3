@@ -9,7 +9,7 @@ long_description = (this_directory / "README.md").read_text()
 setup(
     name="pywykop3",
     packages=["pywykop3"],
-    version="0.3",
+    version="0.3.0",
     license="MIT",
     description="Wykop v2 REST API Client",
     long_description=long_description,
