@@ -87,7 +87,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_NOTES: |
-            $(cat release-notes.txt)
+            cat release-notes.txt
         with:
           tag_name: ${{ steps.next_version.outputs.minor }}
           release_name: pywykop3 - ${{ steps.next_version.outputs.minor }}
