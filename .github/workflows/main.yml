@@ -9,10 +9,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r docs_requirements.txt
-      - name: Sphinx build
-        run:
-          cd docs
-          make html
+      - name: change folder
+        run: cd docs
+      - name: Generate docs
+        run: make html
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
