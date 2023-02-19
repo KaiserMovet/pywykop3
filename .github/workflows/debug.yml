@@ -1,0 +1,28 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Test and Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: custom_path_to_repo
+
+      - name: Get version and version code
+        uses: xom9ikk/version-by-tag@v1
+        id: version_by_tag
+        with:
+          path: custom_path_to_repo
+          isUseGithubRunNumber: false
+          offset: 77
+
+      - name: Some other action
+        run: |
+          echo "Tag: ${{ steps.version_by_tag.outputs.tag }}"
+          echo "Semver: ${{ steps.version_by_tag.outputs.semver }}"
+          echo "Version code: ${{ steps.version_by_tag.outputs.versionCode }}"
