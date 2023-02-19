@@ -311,17 +311,17 @@ class WykopAPI:
 
         Args:
             sort (str, optional): Rodzaj sortowania.
-            Available values : newest, active, hot. Defaults to "hot".
+                Available values : newest, active, hot. Defaults to "hot".
             last_update (int, optional): Pokaż wyniki z ostatnich godzin
-            [1, 2, 3, 6, 12, 24]. Filtr dostępny tylko wraz z filtrem gorące.
-            Defaults to 12.
+                [1, 2, 3, 6, 12, 24]. Filtr dostępny tylko wraz z filtrem gorące.
+                Defaults to 12.
             page_count (int, optional): Liczba stron do pobrania.
-            Podaj -1, żeby pobrać wszystko. Defaults to 1.
+                Podaj -1, żeby pobrać wszystko. Defaults to 1.
             page (int | str | None, optional): Numer strony do pobrania.
-            Defaults to None.
-            category (str | None, optional): Kategoria. Defaults to None.
-            bucket (str | None, optional): Hash kategorii użytkownika.
-            Defaults to None.
+                Defaults to None.
+            category (str | None, optional): Kategoria.
+                Defaults to None.
+            bucket (str | None, optional): Hash kategorii użytkownika. Defaults to None.
 
         Returns:
             List: Wpisy z mikrobloga.
@@ -360,13 +360,13 @@ class WykopAPI:
         Args:
             content (str): Treść własna użytkownika.
             photo (str | None, optional): Załącznik użytkownika.
-            W celu dodania należy podać "key" pliku z media/photo.
-            Akceptowane są tylko pliki przesłane jako typ comments.
-            Defaults to None.
+                W celu dodania należy podać "key" pliku z media/photo.
+                Akceptowane są tylko pliki przesłane jako typ comments.
+                Defaults to None.
             embed (str | None, optional): Unikatowy identyfikator embed.
-            Defaults to None.
+                Defaults to None.
             survey (str | None, optional): Ankieta użytkownika.
-            W celu dodania należy podać Indentyfikator. Defaults to None.
+                W celu dodania należy podać Indentyfikator. Defaults to None.
             adult (bool, optional): Wpis tylko dla dorosłych. Defaults to False.
 
         Returns:
@@ -427,13 +427,13 @@ class WykopAPI:
             entry_id (int): Identyfikator wpisu
             content (str): Treść własna użytkownika.
             photo (str | None, optional): Załącznik użytkownika.
-            W celu dodania należy podać "key" pliku z media/photo.
-            Akceptowane są tylko pliki przesłane jako typ comments.
-            Defaults to None.
+                W celu dodania należy podać "key" pliku z media/photo.
+                Akceptowane są tylko pliki przesłane jako typ comments.
+                Defaults to None.
             embed (str | None, optional): Unikatowy identyfikator embed.
-            Defaults to None.
+                Defaults to None.
             survey (str | None, optional): Ankieta użytkownika.
-            W celu dodania należy podać Indentyfikator. Defaults to None.
+                W celu dodania należy podać Indentyfikator. Defaults to None.
             adult (bool, optional): Wpis tylko dla dorosłych. Defaults to False.
 
         Returns:
@@ -566,9 +566,9 @@ class WykopAPI:
         Args:
             entry_id (int): Identyfikator wpisu
             page (int, optional): Numer strony do pobrania.
-            Defaults to 1.
+                Defaults to 1.
             page_count (int, optional): Liczba stron do pobrania.
-            Podaj -1, żeby pobrać wszystko. Defaults to 1.
+                Podaj -1, żeby pobrać wszystko. Defaults to 1.
 
         Returns:
             List[Comment]: _description_
@@ -595,16 +595,16 @@ class WykopAPI:
         Args:
             entry_id (int): Identyfikator wpisu
             content (str): Treść własna użytkownika. Treść może być pusta w
-            przypadku dodania innych multimediów.
-            W przypadku samej treści musi zawierać min. 5 znaków.
+                przypadku dodania innych multimediów.
+                W przypadku samej treści musi zawierać min. 5 znaków.
             embed (str | None, optional): Unikatowy identyfikator pliku.
-            Defaults to None.
+                Defaults to None.
             photo (str | None, optional): Załącznik użytkownika. W celu
-            dodania należy podać "key" pliku z media/photo.
-            Akceptowane są tylko pliki przesłane jako typ comments.
-            Defaults to None.
+                dodania należy podać "key" pliku z media/photo.
+                Akceptowane są tylko pliki przesłane jako typ comments.
+                Defaults to None.
             adult (bool, optional): Komentarz tylko dla dorosłych.
-            Defaults to False.
+                Defaults to False.
 
         Returns:
             Comment: Dodany komentarz
@@ -665,16 +665,16 @@ class WykopAPI:
             entry_id (int): Identyfikator wpisu
             comment_id (int): Identyfikator komentarza
             content (str): Treść własna użytkownika. Treść może być pusta w
-            przypadku dodania innych multimediów.
-            W przypadku samej treści musi zawierać min. 5 znaków.
+                przypadku dodania innych multimediów.
+                W przypadku samej treści musi zawierać min. 5 znaków.
             embed (str | None, optional): Unikatowy identyfikator pliku.
-            Defaults to None.
+                Defaults to None.
             photo (str | None, optional): Załącznik użytkownika. W celu
-            dodania należy podać "key" pliku z media/photo.
-            Akceptowane są tylko pliki przesłane jako typ comments.
-            Defaults to None.
+                dodania należy podać "key" pliku z media/photo.
+                Akceptowane są tylko pliki przesłane jako typ comments.
+                Defaults to None.
             adult (bool, optional): Komentarz tylko dla dorosłych.
-            Defaults to False.
+                Defaults to False.
 
         Returns:
             Comment: Zmodyfikowany komentarz
