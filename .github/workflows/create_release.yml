@@ -37,6 +37,12 @@ jobs:
           pytest --refresh-token ${{ secrets.REFRESH_TOKEN }}
 
       # DOCUMENTATION
+      - name: DOCUMENTATION - Install dependencies
+        run: |
+          pip install -r docs_requirements.txt
+      - name: DOCUMENTATION - Generate docs
+        run: make html
+        working-directory: docs
       - name: DOCUMENTATION - Init new repo in dist folder and commit generated files
         run: |
           cd docs/build/html/
