@@ -8,6 +8,7 @@ jobs:
     name: Test and Release
     runs-on: ubuntu-latest
     steps:
+      
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Set up Python
@@ -21,6 +22,8 @@ jobs:
           pip install pylint
           pip install flake8 pytest
           pip install -r docs_requirements.txt
+      
+      # TESTS
       - name: TESTS - Analysing the code with pylint
         run: |
           pylint $(git ls-files '*.py') --rcfile=setup.cfg
@@ -34,6 +37,7 @@ jobs:
         run: |
           pytest --refresh-token ${{ secrets.REFRESH_TOKEN }}
     
+      # DOCUMENTATION
       - name: DOCUMENTATION - Init new repo in dist folder and commit generated files
         run: |
           cd docs/build/html/
@@ -51,7 +55,7 @@ jobs:
           force: true
           directory: ./docs/build/html
 
-    
+      # RELEASE
       - name: NEW RELEASE - Bump Version
         id: bump_version
         uses: cgservices/semantic-version@v1.2.0
