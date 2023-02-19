@@ -8,7 +8,6 @@ jobs:
     name: Test and Release
     runs-on: ubuntu-latest
     steps:
-      
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Set up Python
@@ -22,21 +21,21 @@ jobs:
           pip install pylint
           pip install flake8 pytest
           pip install -r docs_requirements.txt
-      
+
       # TESTS
       - name: TESTS - Analysing the code with pylint
         run: |
           pylint $(git ls-files '*.py') --rcfile=setup.cfg
       - name: TESTS - Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: TESTS - Test with pytest
         run: |
           pytest --refresh-token ${{ secrets.REFRESH_TOKEN }}
-    
+
       # DOCUMENTATION
       - name: DOCUMENTATION - Init new repo in dist folder and commit generated files
         run: |
@@ -64,11 +63,11 @@ jobs:
           push: true
           push_tag: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
-    
+
       - name: NEW RELEASE - Update Version in setup.py
         run: |
           sed -i "s/version='[0-9].[0-9].[0-9]',/version='${{ steps.bump_version.outputs.new_version }}',/" setup.py
-    
+
       - name: NEW RELEASE - Generate Release Notes
         id: release_notes
         run: |
