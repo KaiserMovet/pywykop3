@@ -36,6 +36,10 @@ API documentation can be found [HERE](https://kaisermovet.github.io/pywykop3/api
 
 ## Available methods
 
+- ❌ - Not tested
+- ✔️ - Tested
+- ⛔ - Unable to test
+
 ### Users
 
 | Method                                                                                                                 | Tested? |
@@ -63,13 +67,13 @@ API documentation can be found [HERE](https://kaisermovet.github.io/pywykop3/api
 | Method                                                                                                             | Tested? |
 | ------------------------------------------------------------------------------------------------------------------ | ------- |
 | [get_entries](<(https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.get_entries)>)               | ❌      |
-| [post_entry](<(https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.post_entry)>)                 | ❌      |
+| [post_entry](<(https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.post_entry)>)                 | ✔️      |
 | [get_entry_by_id](<(https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.get_entry_by_id)>)       | ✔️      |
 | [put_entry](<(https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.put_entry)>)                   | ✔️      |
 | [delete_entry_by_id](<(https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.delete_entry_by_id)>) | ✔️      |
-| [get_entry_votes](<(https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.get_entry_votes)>)       | ❌      |
-| [post_entry_vote](<(https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.post_entry_vote)>)       | ❌      |
-| [delete_entry_vote](<(https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.delete_entry_vote)>)   | ❌      |
+| [get_entry_votes](<(https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.get_entry_votes)>)       | ✔️      |
+| [post_entry_vote](<(https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.post_entry_vote)>)       | ⛔      |
+| [delete_entry_vote](<(https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.delete_entry_vote)>)   | ⛔      |
 | [get_entries_newer](<(https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.get_entries_newer)>)   | ❌      |
 
 ### Mikroblog - komentarze

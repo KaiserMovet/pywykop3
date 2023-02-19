@@ -1,4 +1,5 @@
 import sys
+from pprint import pprint
 
 import logger
 from pywykop3 import WykopAPI
@@ -10,8 +11,8 @@ def main() -> None:
     # print(api.connect())
 
     api = WykopAPI(refresh_token=sys.argv[3])
-    print(f"{api.connector._token=}")
-    print(api.delete_entry_by_id(70475383))
+    # print(f"{api.connector._token=}")
+    pprint(api.post_entry_vote(70475373))
 
 
 if __name__ == "__main__":
