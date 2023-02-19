@@ -1,3 +1,4 @@
+import os
 from distutils.core import setup  # pylint: disable=deprecated-module
 
 # read the contents of your README file
@@ -9,7 +10,7 @@ long_description = (this_directory / "README.md").read_text()
 setup(
     name="pywykop3",
     packages=["pywykop3"],
-    version="0.3.0",
+    version=os.environ["TARGET_VERSION"],
     license="MIT",
     description="Wykop v2 REST API Client",
     long_description=long_description,

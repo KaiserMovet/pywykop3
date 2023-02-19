@@ -52,16 +52,11 @@ jobs:
       - name: DOCUMENTATION - Install dependencies
         run: |
           pip install -r docs_requirements.txt
-      - name: DOCUMENTATION - Update Version in conf.py
-        run: |
-          sed -i 's/release = "0\.4"/release = "${{ steps.next_version.outputs.minor }}"/' conf.py
-        working-directory: docs/source
-      - name: DOCUMENTATION - Show conf.py
-        run: cat conf.py
-        working-directory: docs/source
       - name: DOCUMENTATION - Generate docs
         run: make html
         working-directory: docs
+        env:
+          TARGET_VERSION: ${{ steps.next_version.outputs.minor }}
       - name: DOCUMENTATION - Init new repo in dist folder and commit generated files
         run: |
           cd docs/build/html/
@@ -80,11 +75,6 @@ jobs:
           directory: ./docs/build/html
 
       # RELEASE
-      - name: RELEASE - Update Version in setup.py
-        run: |
-          sed -i "s/version='[0-9].[0-9].[0-9]',/version='${{ steps.next_version.outputs.minor }}',/" setup.py
-      - name: RELEASE - Show setup.py
-        run: cat setup.py
       - name: RELEASE - Generate Release Notes
         id: release_notes
         run: |
@@ -118,6 +108,8 @@ jobs:
           pip install build
       - name: PYPI - Build package
         run: python -m build
+        env:
+          TARGET_VERSION: ${{ steps.next_version.outputs.minor }}
       - name: PYPI - Publish package
         uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
         with:

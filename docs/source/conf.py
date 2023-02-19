@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath("../../."))
 project = "pywykop3"
 copyright = "2023, Mateusz Rynkiewicz"
 author = "Mateusz Rynkiewicz"
-release = "0.4"
+release = os.environ["TARGET_VERSION"]
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
