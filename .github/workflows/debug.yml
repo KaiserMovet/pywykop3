@@ -10,12 +10,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Get current version
 
-      - name: Get version and version code
-        uses: xom9ikk/version-by-tag@v1
-        id: version_by_tag
-      - name: Some other action
-        run: |
-          echo "Tag: ${{ steps.version_by_tag.outputs.tag }}"
-          echo "Semver: ${{ steps.version_by_tag.outputs.semver }}"
-          echo "Version code: ${{ steps.version_by_tag.outputs.versionCode }}"
+      - name: Get current version
+        id: current_version
+        uses: ncipollo/semantic-version-action@v1
+
+      - name: Next Version
+        uses: vemel/nextversion@0.1.1
+        with:
+          version: ${{ steps.current_version.outputs.semver  }}
+        id: next_version
+
+      - name: Show next version
+        run: echo ${{ steps.next_version.outputs.minor  }}
