@@ -19,7 +19,7 @@ jobs:
         with:
           path: custom_path_to_repo
           isUseGithubRunNumber: false
-          offset: 14
+          offset: 1000
 
       - name: Some other action
         run: |
