@@ -81,13 +81,16 @@ jobs:
         run: |
           git log $(git describe --tags --abbrev=0)..HEAD --format="- %s%n" > release-notes.txt
         shell: bash
+      - name: RELEASE - Retrieve release notes
+        run: |
+          echo "RELEASE_NOTES=$(cat release-notes.txt)" >> $GITHUB_OUTPUT
+        id: version
       - name: RELEASE - Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_NOTES: |
-            cat release-notes.txt
+          RELEASE_NOTES: ${{ steps.version.outputs.RELEASE_NOTES }}
         with:
           tag_name: ${{ steps.next_version.outputs.minor }}
           release_name: pywykop3 - ${{ steps.next_version.outputs.minor }}
