@@ -13,7 +13,7 @@ jobs:
 
       - name: Get current version
         id: current_version
-        uses: ncipollo/semantic-version-action@v1
+        uses: xom9ikk/version-by-tag@v1
 
       - name: Next Version
         uses: vemel/nextversion@0.1.1
