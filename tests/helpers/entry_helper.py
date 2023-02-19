@@ -37,5 +37,7 @@ class EntryHelper:
         if self._created_entries:
             logging.error(
                 "Following entries were not deleted: %s",
-                ", ".join(self._created_entries),  # type: ignore
+                ", ".join(
+                    [str(entry_id) for entry_id in self._created_entries]
+                ),
             )
