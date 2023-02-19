@@ -52,13 +52,13 @@ jobs:
       - name: DOCUMENTATION - Install dependencies
         run: |
           pip install -r docs_requirements.txt
-      - name: RELEASE - Update Version in conf.py
+      - name: DOCUMENTATION - Update Version in conf.py
         run: |
           sed -i 's/release = "0\.4"/release = "${{ steps.next_version.outputs.minor }}"/' conf.py
-        working-directory: docs
+        working-directory: docs/source
       - name: DOCUMENTATION - Show conf.py
         run: cat conf.py
-        working-directory: docs
+        working-directory: docs/source
       - name: DOCUMENTATION - Generate docs
         run: make html
         working-directory: docs
