@@ -69,10 +69,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Show version
-        run: echo  ${{ steps.bump_version.outputs.new_version }}
+        run: echo  ${{ steps.bump_version.outputs.tag }}
       - name: NEW RELEASE - Update Version in setup.py
         run: |
-          sed -i "s/version='[0-9].[0-9].[0-9]',/version='${{ steps.bump_version.outputs.new_version }}',/" setup.py
+          sed -i "s/version='[0-9].[0-9].[0-9]',/version='${{ steps.bump_version.outputs.tag }}',/" setup.py
 
       - name: NEW RELEASE - Generate Release Notes
         id: release_notes
@@ -87,8 +87,8 @@ jobs:
           RELEASE_NOTES: |
             $(cat release-notes.txt)
         with:
-          tag_name: ${{ steps.bump_version.outputs.new_tag }}
-          release_name: pywykop3 - ${{ steps.bump_version.outputs.new_version }}
+          tag_name: ${{ steps.bump_version.outputs.tag }}
+          release_name: pywykop3 - ${{ steps.bump_version.outputs.tag }}
           body: ${{ env.RELEASE_NOTES }}
           draft: false
           prerelease: false
