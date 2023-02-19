@@ -55,14 +55,13 @@ jobs:
           directory: ./docs/build/html
 
       # RELEASE
-      - name: NEW RELEASE - Bump Version
+      - name: Bump Version
         id: bump_version
-        uses: cgservices/semantic-version@v1.2.0
+        uses: ncipollo/semantic-version-action@v1
         with:
-          release_type: minor
-          push: true
-          push_tag: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: NEW RELEASE - Update Version in setup.py
         run: |
