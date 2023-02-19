@@ -17,6 +17,8 @@ Python REST API Client for Wykop2 (via api v3)
     # User logged in
     api = WykopAPI(refresh_token=refresh_token)
 
+    list_of_users = api.get_entry_comment_votes(70432439, 249723413)
+
 ## Obtaining Refresh Token
 
 1.  Execute code:
