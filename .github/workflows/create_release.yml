@@ -61,14 +61,17 @@ jobs:
           directory: ./docs/build/html
 
       # VERSION
+      - name: VERSION - Get current version
+        id: current_version
+        uses: xom9ikk/version-by-tag@v1
       - name: VERSION - Next Version
         uses: vemel/nextversion@0.1.1
         with:
           version: ${{ steps.current_version.outputs.semver  }}
         id: next_version
-
       - name: VERSION - Show next version
         run: echo ${{ steps.next_version.outputs.minor  }}
+
       # RELEASE
       - name: RELEASE - Update Version in setup.py
         run: |
