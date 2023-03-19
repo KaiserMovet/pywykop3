@@ -1,6 +1,6 @@
 import pytest
 
-from pywykop3 import User, WykopAPI
+from pywykop3 import WykopAPI
 
 
 @pytest.mark.parametrize(

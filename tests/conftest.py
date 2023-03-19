@@ -16,7 +16,7 @@ def wykop_api(request):
 
 
 @pytest.fixture(scope="session")
-def entry_helper(wykop_api):
+def entry_helper(wykop_api):  # pylint: disable=redefined-outer-name
     helper = EntryHelper(wykop_api)
     yield helper
     helper.cleanup()
