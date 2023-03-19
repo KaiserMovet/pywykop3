@@ -44,13 +44,12 @@ API documentation can be found [HERE](https://kaisermovet.github.io/pywykop3/api
 
 | Method                                                                                                                 | Tested? |
 | ---------------------------------------------------------------------------------------------------------------------- | ------- |
-| [get_users_autocomplete](https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.get_users_autocomplete) | ❌      |
+| [get_users_autocomplete](https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.get_users_autocomplete) | ✔️      |
 
 ### Tags
 
 | Method                                                                                                                         | Tested? |
 | ------------------------------------------------------------------------------------------------------------------------------ | ------- |
-| [get_users_autocomplete](https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.get_users_autocomplete)         | ❌      |
 | [get_tags_popular](https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.get_tags_popular)                     | ❌      |
 | [get_tags_popular_user_tags](https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.get_tags_popular_user_tags) | ❌      |
 | [get_tags_related](https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.get_tags_related)                     | ❌      |

@@ -9,9 +9,14 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope="session")
-def entry_helper(request):
+def wykop_api(request):
     token = request.config.getoption("--refresh-token")
     api = WykopAPI(refresh_token=token)
-    helper = EntryHelper(api)
+    return api
+
+
+@pytest.fixture(scope="session")
+def entry_helper(wykop_api):
+    helper = EntryHelper(wykop_api)
     yield helper
     helper.cleanup()
