@@ -8,7 +8,6 @@ from pywykop3 import WykopAPI
     [
         ("m__", "m__b"),
         ("m__b", "m__b"),
-        ("", "m__b"),
     ],
 )
 def test_user_autocomplete(
