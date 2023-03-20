@@ -1,7 +1,7 @@
 import pytest
 
 from pywykop3 import WykopAPI
-from tests.helpers import EntryHelper
+from tests.helpers import EntryHelper, MediaHelper
 
 
 def pytest_addoption(parser):
@@ -18,5 +18,12 @@ def wykop_api(request):
 @pytest.fixture(scope="session")
 def entry_helper(wykop_api):  # pylint: disable=redefined-outer-name
     helper = EntryHelper(wykop_api)
+    yield helper
+    helper.cleanup()
+
+
+@pytest.fixture(scope="session")
+def media_helper(wykop_api):  # pylint: disable=redefined-outer-name
+    helper = MediaHelper(wykop_api)
     yield helper
     helper.cleanup()

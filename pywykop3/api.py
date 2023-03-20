@@ -7,6 +7,7 @@ from .utils import NotEmptyDict
 User = NewType("User", Dict)
 Entry = NewType("Entry", Dict)
 Comment = NewType("Comment", Dict)
+Photo = NewType("Photo", Dict)
 
 
 class ApiException(Exception):
@@ -818,5 +819,101 @@ class WykopAPI:
             {
                 400: "Użytkownik nie głosował wcześniej na komentarz.",
                 404: "Nie odnaleziono wpisu lub komentarza.",
+            },
+        )
+
+    # Media - Zdjęcia
+    def post_media_photo(
+        self, media_type: str, photo: bytes, photo_name: str, photo_type: str
+    ) -> Photo:
+        """
+        Wgrywanie nowego pliku na serwer
+        Dozwolone jest wgrywanie multimedialnych plików o następujących
+        mimetype: 'image/jpeg', 'image/jpg', 'image/pjpeg', 'image/gif',
+        'image/png', 'image/x-png'. Maksymalny rozmiar pliku to 10 MB.
+
+        Args:
+            media_type (str): Nazwa obszaru z plikami na serwerze
+                [settings, comments, links, content]
+            photo (bytes): Plik do wysłania
+            photo_name (str): Nazwa pliku
+            photo_type (str): mimetype
+        """
+        endpoint = "media/photos/upload"
+        data = NotEmptyDict()
+        data["type"] = media_type
+        files = {
+            "file": (photo_name, photo, photo_type),
+        }
+        res = self.connector.request(
+            Methods.POST,
+            endpoint,
+            params=data,
+            files=files,
+        )
+        self.raise_error_if_needed(
+            res,
+            {
+                400: "Nie załączono pliku.",
+                413: "Za duży plik.",
+                415: "Nieobsługiwane mime type.",
+                429: "Za dużo prób dodania zdjęcia w którtkim okresie czasu.",
+            },
+        )
+        return res.data  # type: ignore
+
+    def post_media_photo_by_url(self, media_type: str, photo_url: str) -> Photo:
+        """
+        Wgrywanie wskazanego pliku przez URL na serwer
+        Dozwolone jest wgrywanie multimedialnych plików o następujących
+        mimetype: 'image/jpeg', 'image/jpg', 'image/pjpeg', 'image/gif',
+        'image/png', 'image/x-png'. Maksymalny rozmiar pliku to 10 MB.
+
+        Args:
+            media_type (str): Nazwa obszaru z plikami na serwerze
+                [settings, comments, links, content]
+            photo_url (str): Adres na jakim znajduję się obrazek
+
+        """
+        endpoint = "media/photos"
+        params = NotEmptyDict()
+        params["type"] = media_type
+        data = NotEmptyDict()
+        data["url"] = photo_url
+        res = self.connector.request(
+            Methods.POST,
+            endpoint,
+            params=params,
+            data=data,
+        )
+        self.raise_error_if_needed(
+            res,
+            {
+                400: "Nie załączono pliku.",
+                409: "Wystąpił błąd podczas walidacji formularza",
+                413: "Za duży plik.",
+                415: "Nieobsługiwane mime type.",
+                429: "Za dużo prób dodania zdjęcia w którtkim okresie czasu.",
+            },
+        )
+        return res.data  # type: ignore
+
+    def delete_media_photo(self, photo_key: str) -> None:
+        """
+        Usunięcie pliku
+        Właściciel pliku posiada możliwość jego usunięcia z serwera.
+
+        Args:
+            photo_key (str): Identyfikator pliku
+
+        """
+        endpoint = f"media/photos/{photo_key}"
+        res = self.connector.request(Methods.DELETE, endpoint, timeout=30)
+        self.raise_error_if_needed(
+            res,
+            {
+                400: "Brak uprawnień do usunięcia pliku.",
+                404: "Plik nie został odnaleziony lub neleży "
+                "do innego użytkownika.",
             },
         )

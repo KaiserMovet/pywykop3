@@ -57,7 +57,6 @@ class WykopConnector:
         self._token: str | None = self._get_token()
         self.header = {
             "accept": "application/json",
-            "Content-Type": "application/json",
             "Authorization": f"Bearer {self._token}",
         }
         self.connect()
@@ -100,6 +99,7 @@ class WykopConnector:
         data: Dict | None = None,
         params: Dict | None = None,
         timeout: int = 10,
+        files: Dict | None = None,
     ) -> WykopResponse:
         # Remove trailing slash if necessary
         endpoint = endpoint.lstrip("/")
@@ -118,6 +118,7 @@ class WykopConnector:
             params=params,
             headers=self.header,
             timeout=timeout,
+            files=files,
         )
         print(f"{res.text=}")
         res_json = res.json() if res.text else None

@@ -28,9 +28,10 @@ def run_function_with_retry(
         except Exception as exc:  # pylint: disable=broad-exception-caught
             last_exc = exc
             logging.warning(
-                "Cannot run %s. Waiting %s seconds",
+                "Cannot run %s. Waiting %s seconds. Exception: %s",
                 str(function),
                 str(wait_time),
+                str(exc),
             )
             time.sleep(wait_time)
             wait_time *= wait_multiplier

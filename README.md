@@ -87,3 +87,11 @@ API documentation can be found [HERE](https://kaisermovet.github.io/pywykop3/api
 | [get_entry_comment_votes](https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.get_entry_comment_votes)     | ❌      |
 | [post_entry_comment_vote](https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.post_entry_comment_vote)     | ❌      |
 | [delete_entry_comment_vote](https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.delete_entry_comment_vote) | ❌      |
+
+### Media
+
+| Method                                                                                                                   | Tested? |
+| ------------------------------------------------------------------------------------------------------------------------ | ------- |
+| [post_media_photo](https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.post_media_photo)               | ✔️      |
+| [post_media_photo_by_url](https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.post_media_photo_by_url) | ✔️      |
+| [delete_media_photo](https://kaisermovet.github.io/pywykop3/api.html#pywykop3.api.WykopAPI.delete_media_photo)           | ❌      |
