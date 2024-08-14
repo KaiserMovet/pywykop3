@@ -7,8 +7,7 @@ import requests
 from requests.compat import urljoin
 
 
-class WykopConnectorException(Exception):
-    ...
+class WykopConnectorException(Exception): ...
 
 
 class Methods(str, Enum):
@@ -61,6 +60,16 @@ class WykopConnector:
         }
         self.connect()
 
+    def _get_new_refresh_token(self):
+        header = {
+            "accept": "application/json",
+            "Content-Type": "application/json",
+        }
+        url = urljoin(self.URL, "refresh-token")
+        data = {"refresh_token": self._refresh_token}
+        res = requests.post(url, json={"data": data}, headers=header, timeout=15)
+        self._refresh_token = res.json()["data"]["refresh-token"]
+
     # pylint disable=method-cache-max-size-none
     def _get_token(self) -> str:
         header = {
@@ -81,9 +90,9 @@ class WykopConnector:
                 "You need to provide key and secret OR refresh_token"
             )
 
-        res = requests.post(
-            url, json={"data": data}, headers=header, timeout=15
-        )
+        res = requests.post(url, json={"data": data}, headers=header, timeout=15).json()
+        if "refresh-token" in res["data"]:
+            self._refresh_token = res["data"]["refresh-token"]
         return res.json()["data"]["token"]
 
     def connect(self) -> str:
@@ -120,15 +129,13 @@ class WykopConnector:
             timeout=timeout,
             files=files,
         )
-        print(f"{res.text=}")
+        logging.info("res.text='%s'", res.text)
         res_json = res.json() if res.text else None
         res_data = res_json.get("data", []) if res_json else []
         res_error = res_json.get("error", {}) if res_json else {}
         res_pagination = res_json.get("pagination", {}) if res_json else {}
 
-        return WykopResponse(
-            res.status_code, res_data, res_error, res_pagination
-        )
+        return WykopResponse(res.status_code, res_data, res_error, res_pagination)
 
     def request_with_pagination(
         self,
