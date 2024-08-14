@@ -52,7 +52,7 @@ class WykopConnector:
         """
         self._key = key
         self._secret = secret
-        self._refresh_token = refresh_token
+        self.refresh_token = refresh_token
         self._token: str | None = self._get_token()
         self.header = {
             "accept": "application/json",
@@ -66,9 +66,9 @@ class WykopConnector:
             "Content-Type": "application/json",
         }
         url = urljoin(self.URL, "refresh-token")
-        data = {"refresh_token": self._refresh_token}
+        data = {"refresh_token": self.refresh_token}
         res = requests.post(url, json={"data": data}, headers=header, timeout=15)
-        self._refresh_token = res.json()["data"]["refresh-token"]
+        self.refresh_token = res.json()["data"]["refresh-token"]
 
     # pylint disable=method-cache-max-size-none
     def _get_token(self) -> str:
@@ -80,10 +80,10 @@ class WykopConnector:
             # Auth
             url = urljoin(self.URL, "auth")
             data = {"key": self._key, "secret": self._secret}
-        elif self._refresh_token:
+        elif self.refresh_token:
             # Refresh token
             url = urljoin(self.URL, "refresh-token")
-            data = {"refresh_token": self._refresh_token}
+            data = {"refresh_token": self.refresh_token}
 
         else:
             raise WykopConnectorException(
@@ -93,7 +93,7 @@ class WykopConnector:
         res = requests.post(url, json={"data": data}, headers=header, timeout=15).json()
 
         if "refresh_token" in res["data"]:
-            self._refresh_token = res["data"]["refresh_token"]
+            self.refresh_token = res["data"]["refresh_token"]
         return res["data"]["token"]
 
     def connect(self) -> str:

@@ -34,6 +34,9 @@ API documentation can be found [HERE](https://kaisermovet.github.io/pywykop3/api
 3.  Allow access to your account
 4.  Copy refresh token from url ('rtoken' variable)
 
+After execution of your app, you should save new refresh-token
+(wyko_api.connector.refresh_token) and use it next time
+
 ## Available methods
 
 - ❌ - Not tested
