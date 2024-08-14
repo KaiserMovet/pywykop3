@@ -91,9 +91,10 @@ class WykopConnector:
             )
 
         res = requests.post(url, json={"data": data}, headers=header, timeout=15).json()
-        if "refresh-token" in res["data"]:
-            self._refresh_token = res["data"]["refresh-token"]
-        return res.json()["data"]["token"]
+
+        if "refresh_token" in res["data"]:
+            self._refresh_token = res["data"]["refresh_token"]
+        return res["data"]["token"]
 
     def connect(self) -> str:
         res = requests.get(
