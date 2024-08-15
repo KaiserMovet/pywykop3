@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pywykop3.connector &mdash; pywykop3 0.7.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=fe7df9b0"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            pywykop3
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">pywykop3.api module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../connector.html">pywykop3.connector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">pywykop3.utils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pywykop3</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pywykop3.connector</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pywykop3.connector</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">requests.compat</span> <span class="kn">import</span> <span class="n">urljoin</span>
+
+
+<div class="viewcode-block" id="WykopConnectorException">
+<a class="viewcode-back" href="../../connector.html#pywykop3.connector.WykopConnectorException">[docs]</a>
+<span class="k">class</span> <span class="nc">WykopConnectorException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span> <span class="o">...</span></div>
+
+
+
+<div class="viewcode-block" id="Methods">
+<a class="viewcode-back" href="../../connector.html#pywykop3.connector.Methods">[docs]</a>
+<span class="k">class</span> <span class="nc">Methods</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="n">GET</span> <span class="o">=</span> <span class="s2">&quot;GET&quot;</span>
+    <span class="n">POST</span> <span class="o">=</span> <span class="s2">&quot;POST&quot;</span>
+    <span class="n">PUT</span> <span class="o">=</span> <span class="s2">&quot;PUT&quot;</span>
+    <span class="n">DELETE</span> <span class="o">=</span> <span class="s2">&quot;DELETE&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="WykopResponse">
+<a class="viewcode-back" href="../../connector.html#pywykop3.connector.WykopResponse">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">WykopResponse</span><span class="p">:</span>
+    <span class="n">code</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">List</span> <span class="o">|</span> <span class="n">Dict</span>
+    <span class="n">error</span><span class="p">:</span> <span class="n">Dict</span>
+    <span class="n">pagination</span><span class="p">:</span> <span class="n">Dict</span>
+    <span class="nb">next</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="WykopConnector">
+<a class="viewcode-back" href="../../connector.html#pywykop3.connector.WykopConnector">[docs]</a>
+<span class="k">class</span> <span class="nc">WykopConnector</span><span class="p">:</span>
+
+    <span class="n">URL</span> <span class="o">=</span> <span class="s2">&quot;https://wykop.pl/api/v3/&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">secret</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wykop Connector constructor.</span>
+<span class="sd">        You need to provide a key and secret OR refresh_token.</span>
+<span class="sd">        To obtain a refresh token, you need to provide key and secret,</span>
+<span class="sd">        execute self.connect(), open link</span>
+<span class="sd">        and login to your Wykop account.</span>
+<span class="sd">        Refresh token will be shown in url in &#39;rtoken&#39; variable.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str | None, optional): Key. Defaults to None.</span>
+<span class="sd">            secret (str | None, optional): Secret. Defaults to None.</span>
+<span class="sd">            refresh_token (str | None, optional): Refresh token.</span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_secret</span> <span class="o">=</span> <span class="n">secret</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span> <span class="o">=</span> <span class="n">refresh_token</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_token</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_token</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_new_refresh_token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">URL</span><span class="p">,</span> <span class="s2">&quot;refresh-token&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;refresh_token&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">}</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">},</span> <span class="n">headers</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;refresh-token&quot;</span><span class="p">]</span>
+
+    <span class="c1"># pylint disable=method-cache-max-size-none</span>
+    <span class="k">def</span> <span class="nf">_get_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secret</span><span class="p">:</span>
+            <span class="c1"># Auth</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">URL</span><span class="p">,</span> <span class="s2">&quot;auth&quot;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key</span><span class="p">,</span> <span class="s2">&quot;secret&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secret</span><span class="p">}</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">:</span>
+            <span class="c1"># Refresh token</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">URL</span><span class="p">,</span> <span class="s2">&quot;refresh-token&quot;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;refresh_token&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">}</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">WykopConnectorException</span><span class="p">(</span>
+                <span class="s2">&quot;You need to provide key and secret OR refresh_token&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">},</span> <span class="n">headers</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="s2">&quot;refresh_token&quot;</span> <span class="ow">in</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;refresh_token&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;token&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="WykopConnector.connect">
+<a class="viewcode-back" href="../../connector.html#pywykop3.connector.WykopConnector.connect">[docs]</a>
+    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;https://wykop.pl/api/v3/connect&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">15</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;connect_url&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="WykopConnector.request">
+<a class="viewcode-back" href="../../connector.html#pywykop3.connector.WykopConnector.request">[docs]</a>
+    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Methods</span><span class="p">,</span>
+        <span class="n">endpoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">files</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WykopResponse</span><span class="p">:</span>
+        <span class="c1"># Remove trailing slash if necessary</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="n">endpoint</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">URL</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Executing </span><span class="si">%s</span><span class="s2"> - </span><span class="si">%s</span><span class="s2">, params: </span><span class="si">%s</span><span class="s2">, data: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">method</span><span class="p">,</span>
+            <span class="n">url</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+            <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+            <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span>
+            <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">}</span> <span class="k">if</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+            <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+            <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;res.text=&#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">res_json</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()</span> <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">text</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">res_data</span> <span class="o">=</span> <span class="n">res_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="n">res_json</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="n">res_error</span> <span class="o">=</span> <span class="n">res_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="p">{})</span> <span class="k">if</span> <span class="n">res_json</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">res_pagination</span> <span class="o">=</span> <span class="n">res_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pagination&quot;</span><span class="p">,</span> <span class="p">{})</span> <span class="k">if</span> <span class="n">res_json</span> <span class="k">else</span> <span class="p">{}</span>
+
+        <span class="k">return</span> <span class="n">WykopResponse</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">res_data</span><span class="p">,</span> <span class="n">res_error</span><span class="p">,</span> <span class="n">res_pagination</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WykopConnector.request_with_pagination">
+<a class="viewcode-back" href="../../connector.html#pywykop3.connector.WykopConnector.request_with_pagination">[docs]</a>
+    <span class="k">def</span> <span class="nf">request_with_pagination</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Methods</span><span class="p">,</span>
+        <span class="n">endpoint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">page_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WykopResponse</span><span class="p">:</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">last_response</span><span class="p">:</span> <span class="n">WykopResponse</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+        <span class="n">all_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="n">page_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">page_count</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">page</span><span class="p">:</span>
+                <span class="n">params</span><span class="p">[</span><span class="s2">&quot;page&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">page</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">pagination</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">last_response</span> <span class="o">=</span> <span class="n">res</span>
+            <span class="n">all_data</span> <span class="o">+=</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span>
+
+            <span class="c1"># Break if there is no more data</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="c1"># Break if wrong status code</span>
+            <span class="k">if</span> <span class="mi">200</span> <span class="o">&gt;</span> <span class="n">res</span><span class="o">.</span><span class="n">code</span> <span class="ow">or</span> <span class="n">res</span><span class="o">.</span><span class="n">code</span> <span class="o">&gt;</span> <span class="mi">299</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="c1"># Get next page</span>
+            <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">pagination</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;next&quot;</span><span class="p">):</span>
+                <span class="n">page</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pagination</span><span class="p">[</span><span class="s2">&quot;next&quot;</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">page</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># If page is none, and user is not logged in</span>
+                <span class="n">page</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">page</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="n">last_response</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">all_data</span>
+        <span class="n">last_response</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">page</span>
+        <span class="k">return</span> <span class="n">last_response</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mateusz Rynkiewicz.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

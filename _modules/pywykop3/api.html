@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pywykop3.api &mdash; pywykop3 0.7.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=fe7df9b0"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            pywykop3
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">pywykop3.api module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../connector.html">pywykop3.connector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">pywykop3.utils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pywykop3</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pywykop3.api</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pywykop3.api</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">NewType</span>
+
+<span class="kn">from</span> <span class="nn">.connector</span> <span class="kn">import</span> <span class="n">Methods</span><span class="p">,</span> <span class="n">WykopConnector</span><span class="p">,</span> <span class="n">WykopResponse</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">NotEmptyDict</span>
+
+<span class="n">User</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s2">&quot;User&quot;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">)</span>
+<span class="n">Entry</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s2">&quot;Entry&quot;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">)</span>
+<span class="n">Comment</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s2">&quot;Comment&quot;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">)</span>
+<span class="n">Photo</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s2">&quot;Photo&quot;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ApiException">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.ApiException">[docs]</a>
+<span class="k">class</span> <span class="nc">ApiException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This exception is raised by :class:`WykopAPI` when code of request is other than 2xx.</span>
+<span class="sd">    Exception has 2 additional attributes:</span>
+
+<span class="sd">        - stacode - response code of request</span>
+<span class="sd">        - api_msg - message</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">api_msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Api Exception</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            code (int): code of request</span>
+<span class="sd">            api_msg (str): message</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_msg</span> <span class="o">=</span> <span class="n">api_msg</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CODE </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">api_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="WykopAPI">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI">[docs]</a>
+<span class="k">class</span> <span class="nc">WykopAPI</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main interface to communicate with Wykop</span>
+<span class="sd">    You need to provide</span>
+
+<span class="sd">        - connector</span>
+
+<span class="sd">        OR</span>
+
+<span class="sd">        - key</span>
+<span class="sd">        - secret</span>
+
+<span class="sd">        OR</span>
+
+<span class="sd">        - refresh token</span>
+
+<span class="sd">    If you pass key and secret, Wykop will provide information as</span>
+<span class="sd">    for non-logged in users.</span>
+<span class="sd">    If you refresh_token, Wykop will provide information as</span>
+<span class="sd">    for logged in users.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        connector (WykopConnector | None, optional): Connector object. Can be safely ignored.</span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">        key (str | None, optional): Key. Defaults to None.</span>
+<span class="sd">        secret (str | None, optional): Secret. Defaults to None.</span>
+<span class="sd">        refresh_token (str | None, optional): Refresh token. To obtain it,</span>
+<span class="sd">            see :meth:`connect()` method. Defaults to None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">connector</span><span class="p">:</span> <span class="n">WykopConnector</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">secret</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">refresh_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connector</span> <span class="o">=</span> <span class="n">connector</span> <span class="ow">or</span> <span class="n">WykopConnector</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">secret</span><span class="p">,</span> <span class="n">refresh_token</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WykopAPI.connect">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.connect">[docs]</a>
+    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Istnieje możliwość zalogowania użytkownika przy użyciu WykopConnect.</span>
+<span class="sd">        Aplikacja która próbuje zalogować użytkownika powinna posiadać</span>
+<span class="sd">        odpowiednie uprawnienia nadane przez administratora.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.raise_error_if_needed">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.raise_error_if_needed">[docs]</a>
+    <span class="k">def</span> <span class="nf">raise_error_if_needed</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">:</span> <span class="n">WykopResponse</span><span class="p">,</span> <span class="n">error_dict</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">error_dict</span> <span class="o">=</span> <span class="n">error_dict</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">code</span><span class="p">,</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">error_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="n">code</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ApiException</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">res</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="mi">200</span> <span class="o">&gt;</span> <span class="n">res</span><span class="o">.</span><span class="n">code</span> <span class="ow">or</span> <span class="n">res</span><span class="o">.</span><span class="n">code</span> <span class="o">&gt;</span> <span class="mi">299</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ApiException</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">error</span><span class="p">))</span></div>
+
+
+    <span class="c1"># Users</span>
+
+<div class="viewcode-block" id="WykopAPI.get_users_autocomplete">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_users_autocomplete">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_users_autocomplete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Podpowiada użytkowników po nickname</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query (str): Zapytanie</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List: Kolekcja wyszukanych użytkowników</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="s2">&quot;users/autocomplete&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">}</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span> <span class="p">{</span><span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Brak parametru query lub parametr zbyt krótki&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+    <span class="c1"># Tags</span>
+
+<div class="viewcode-block" id="WykopAPI.get_tags_autocomplete">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_tags_autocomplete">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_tags_autocomplete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Podpowiada tagi.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query (str): Zapytanie</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List: Kolekcja wyszukanych tagów (max do 10 wyników)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="s2">&quot;tags/autocomplete&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">}</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span> <span class="p">{</span><span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Brak parametru query lub parametr zbyt krótki&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.get_tags_popular">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_tags_popular">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_tags_popular</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Zwraca listę popularnych tagów.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List: Lista tagów</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="s2">&quot;tags/popular&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.get_tags_popular_user_tags">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_tags_popular_user_tags">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_tags_popular_user_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Zwraca listę popularnych tagów autorskich.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List: Kolekcja popularnych tagów autorskich (max do 10 wyników)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="s2">&quot;tags/popular-user-tags&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.get_tags_related">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_tags_related">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_tags_related</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Powiązane tagi</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tag_name (str): Nazwa tagu</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List: Kolekcja powiązanych tagów (max do 10 wyników)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;tags/</span><span class="si">{</span><span class="n">tag_name</span><span class="si">}</span><span class="s2">/related&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span> <span class="p">{</span><span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Brak tagu lub tag jest za krótki&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.get_tag">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_tag">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;tags/</span><span class="si">{</span><span class="n">tag_name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.put_tag">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.put_tag">[docs]</a>
+    <span class="k">def</span> <span class="nf">put_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;tags/</span><span class="si">{</span><span class="n">tag_name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">PUT</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Brak uprawnień do usunięcia znaleziska.&quot;</span><span class="p">,</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Tag nie istnieje&quot;</span><span class="p">,</span>
+                <span class="mi">409</span><span class="p">:</span> <span class="s2">&quot;Wystąpił błąd podczas walidacji formularza.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.get_tag_stream">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_tag_stream">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_tag_stream</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">tag_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sort</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;best&quot;</span><span class="p">,</span>
+        <span class="n">type_of_content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">year</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">month</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">page_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Zwraca pełną liste wpisów i znalezisk z konkretnego tagu</span>
+
+<span class="sd">        UWAGA: Parametr page przyjmuje dla użytkowników niezalogowanych int z</span>
+<span class="sd">        numerem strony, a dla zalogowanych hash strony.</span>
+
+<span class="sd">        UWAGA2: Standardowa paginacja jest dostępna tylko dla użytkowników</span>
+<span class="sd">        niezalogowanych. Paginacja dla użytkowników zalogowanych będzie</span>
+<span class="sd">        zwracać hash next dla następnej strony i prev dla poprzedniej.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tag_name (str): Nazwa tagu</span>
+<span class="sd">            page (int | str| None): Numer strony do pobrania. Defaults to None.</span>
+<span class="sd">            sort (str, optional): Rodzaj sortowania. Available values : &quot;all&quot;,</span>
+<span class="sd">            &quot;best&quot;. Defaults to &quot;best&quot;.</span>
+<span class="sd">            type_of_content (str, optional): Rodzaj. Available values : &quot;all&quot;,</span>
+<span class="sd">            &quot;author&quot;, &quot;link&quot;, &quot;entry&quot;. Defaults to &quot;all&quot;.</span>
+<span class="sd">            year (int | None, optional): Rok. Defaults to None.</span>
+<span class="sd">            month (int | None, optional): Miesiąc. Defaults to None.</span>
+<span class="sd">            page_count (int, optional): Liczba stron do pobrania.</span>
+<span class="sd">            Podaj -1, żeby pobrać wszystko. Defaults to 1.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List: Lista wpisów i znalezisk</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;tags/</span><span class="si">{</span><span class="n">tag_name</span><span class="si">}</span><span class="s2">/stream&quot;</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotEmptyDict</span><span class="p">()</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;sort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_of_content</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">year</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;month&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">month</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request_with_pagination</span><span class="p">(</span>
+            <span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">,</span> <span class="n">page_count</span><span class="o">=</span><span class="n">page_count</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Podany tag nie istnieje lub jego dane są niedostępne.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.get_tag_newer">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_tag_newer">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_tag_newer</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">tag_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">type_of_content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">sort</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;best&quot;</span><span class="p">,</span>
+        <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">obj_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Zwraca informację, czy są wpisy, linki w tagu</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tag_name (str): Nazwa tagu</span>
+<span class="sd">            type_of_content (str, optional): Rodzaj. Available values : &quot;all&quot;,</span>
+<span class="sd">            &quot;author&quot;, &quot;link&quot;, &quot;entry&quot;. Defaults to &quot;all&quot;.</span>
+<span class="sd">            sort (str, optional): Rodzaj sortowania. Available values : &quot;all&quot;,</span>
+<span class="sd">            &quot;best&quot;. Defaults to &quot;best&quot;.</span>
+<span class="sd">            date (datetime | None, optional): Data, od której sprawdzamy, czy</span>
+<span class="sd">            pojawiły się nowe treści. Defaults to None.</span>
+<span class="sd">            obj_id (str | None, optional): Identyfikator ostatniego widzianego</span>
+<span class="sd">            wpisu lub znaleziska. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Licznik nowych obiektów</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;tags/</span><span class="si">{</span><span class="n">tag_name</span><span class="si">}</span><span class="s2">/newer&quot;</span>
+        <span class="n">params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotEmptyDict</span><span class="p">()</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;sort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_of_content</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">date</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj_id</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span> <span class="p">{</span><span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Podany tag nie istnieje lub jego dane są niedostępne.&quot;</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.get_tag_users">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_tag_users">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_tag_users</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lista autorów tagu autorskiego</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tag_name (str): Nazwa tagu</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List: Kolekcja autorów tagu (short profile)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;tags/</span><span class="si">{</span><span class="n">tag_name</span><span class="si">}</span><span class="s2">/users&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Podany tag nie istnieje lub jego dane są niedostępne.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.post_tag_user">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.post_tag_user">[docs]</a>
+    <span class="k">def</span> <span class="nf">post_tag_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dodanie nowego współautora tagu (głównego dodaje moderator)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tag_name (str): Nazwa tagu</span>
+<span class="sd">            username (str): Nazwa użytkownika</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;tags/</span><span class="si">{</span><span class="n">tag_name</span><span class="si">}</span><span class="s2">/users/</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Brak wymaganych uprawnień.&quot;</span><span class="p">,</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Podany tag nie istnieje lub jego dane są niedostępne.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.delete_tag_user">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.delete_tag_user">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_tag_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Usuwanie współautora tagu (głównego dodaje moderator)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tag_name (str): Nazwa tagu</span>
+<span class="sd">            username (str): Nazwa użytkownika</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;tags/</span><span class="si">{</span><span class="n">tag_name</span><span class="si">}</span><span class="s2">/users/</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">DELETE</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Brak wymaganych uprawnień.&quot;</span><span class="p">,</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Podany tag nie istnieje lub jego dane są niedostępne.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span></div>
+
+
+    <span class="c1"># Mikroblog</span>
+
+<div class="viewcode-block" id="WykopAPI.get_entries">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_entries">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_entries</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">sort</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;hot&quot;</span><span class="p">,</span>
+        <span class="n">last_update</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span>
+        <span class="n">page_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">bucket</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Entry</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Zwraca wpisy z mikrobloga. UWAGA: Parametr page przyjmuje dla</span>
+<span class="sd">        użytkowników niezalogowanych int z numerem strony, a dla zalogowanych</span>
+<span class="sd">        hash strony. UWAGA2: Standardowa paginacja jest dostępna tylko dla</span>
+<span class="sd">        użytkowników niezalogowanych. Paginacja dla użytkowników zalogowanych</span>
+<span class="sd">        będzie zwracać hash next dla następnej strony i prev dla poprzedniej.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sort (str, optional): Rodzaj sortowania.</span>
+<span class="sd">                Available values : newest, active, hot. Defaults to &quot;hot&quot;.</span>
+<span class="sd">            last_update (int, optional): Pokaż wyniki z ostatnich godzin</span>
+<span class="sd">                [1, 2, 3, 6, 12, 24]. Filtr dostępny tylko wraz z filtrem gorące.</span>
+<span class="sd">                Defaults to 12.</span>
+<span class="sd">            page_count (int, optional): Liczba stron do pobrania.</span>
+<span class="sd">                Podaj -1, żeby pobrać wszystko. Defaults to 1.</span>
+<span class="sd">            page (int | str | None, optional): Numer strony do pobrania.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            category (str | None, optional): Kategoria.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            bucket (str | None, optional): Hash kategorii użytkownika. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List: Wpisy z mikrobloga.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="s2">&quot;entries&quot;</span>
+
+        <span class="n">params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotEmptyDict</span><span class="p">()</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;sort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;last_update&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">last_update</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;category&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">category</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;bucket&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bucket</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request_with_pagination</span><span class="p">(</span>
+            <span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">,</span> <span class="n">page_count</span><span class="o">=</span><span class="n">page_count</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Osiągnięto limit paginacji.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.post_entry">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.post_entry">[docs]</a>
+    <span class="k">def</span> <span class="nf">post_entry</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">photo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">embed</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">survey</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">adult</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Entry</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dodawanie nowego wpisu na mikroblogu</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            content (str): Treść własna użytkownika.</span>
+<span class="sd">            photo (str | None, optional): Załącznik użytkownika.</span>
+<span class="sd">                W celu dodania należy podać &quot;key&quot; pliku z media/photo.</span>
+<span class="sd">                Akceptowane są tylko pliki przesłane jako typ comments.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            embed (str | None, optional): Unikatowy identyfikator embed.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            survey (str | None, optional): Ankieta użytkownika.</span>
+<span class="sd">                W celu dodania należy podać Indentyfikator. Defaults to None.</span>
+<span class="sd">            adult (bool, optional): Wpis tylko dla dorosłych. Defaults to False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict: Dodany wpis</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="s2">&quot;entries&quot;</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotEmptyDict</span><span class="p">()</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;photo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">photo</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;embed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">embed</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;survey&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">survey</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;adult&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adult</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Gdy użytkownik wykona niepoprawny request.&quot;</span><span class="p">,</span>
+                <span class="mi">409</span><span class="p">:</span> <span class="s2">&quot;Wystąpił błąd podczas walidacji formularza.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.get_entry_by_id">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_entry_by_id">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_entry_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Entry</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Zwraca wpisz z mikrobloga.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (int): Identyfikator wpisu</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict: Wpis z mikrobloga</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Nie odnaleziono wpisu.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.put_entry">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.put_entry">[docs]</a>
+    <span class="k">def</span> <span class="nf">put_entry</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">entry_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">photo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">embed</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">survey</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">adult</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Entry</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Edycja wpisu na mikroblogu. Można modyfikwać tylko własne wpisy.</span>
+<span class="sd">        Autor może modyfikować wpis przez 15 minut od daty dodania.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (int): Identyfikator wpisu</span>
+<span class="sd">            content (str): Treść własna użytkownika.</span>
+<span class="sd">            photo (str | None, optional): Załącznik użytkownika.</span>
+<span class="sd">                W celu dodania należy podać &quot;key&quot; pliku z media/photo.</span>
+<span class="sd">                Akceptowane są tylko pliki przesłane jako typ comments.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            embed (str | None, optional): Unikatowy identyfikator embed.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            survey (str | None, optional): Ankieta użytkownika.</span>
+<span class="sd">                W celu dodania należy podać Indentyfikator. Defaults to None.</span>
+<span class="sd">            adult (bool, optional): Wpis tylko dla dorosłych. Defaults to False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict: Dodany wpis</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">NotEmptyDict</span><span class="p">()</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;photo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">photo</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;embed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">embed</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;survey&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">survey</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;adult&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adult</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">PUT</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Brak uprawnień do modyfikacji wpisu.&quot;</span><span class="p">,</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Nie odnaleziono wpisu.&quot;</span><span class="p">,</span>
+                <span class="mi">409</span><span class="p">:</span> <span class="s2">&quot;Wystąpił błąd podczas walidacji formularza.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.delete_entry_by_id">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.delete_entry_by_id">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_entry_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Usuwanie wpisu. Autor może zawsze usunąć własny wpis.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (int): Identyfikator wpisu</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">DELETE</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Brak uprawnień do usunięcia wpisu.&quot;</span><span class="p">,</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Nie odnaleziono wpisu.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.get_entry_votes">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_entry_votes">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_entry_votes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">User</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pobiera nazwy użytkowników którzy głosowali na wpis z mikrobloga.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (int): Identyfikator wpisu</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List: Lista użytkowników, który oddali głos.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">/votes&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Nie odnaleziono wpisu.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.post_entry_vote">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.post_entry_vote">[docs]</a>
+    <span class="k">def</span> <span class="nf">post_entry_vote</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Głosowanie na wpis</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (int): Identyfikator wpisu</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">/votes&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Użytkownik głosował wcześniej na wpis lub jest jego autorem.&quot;</span><span class="p">,</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Nie odnaleziono wpisu.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.delete_entry_vote">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.delete_entry_vote">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_entry_vote</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cofnięcie głosu na wpis</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (str): Identyfikator wpisu</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">/votes&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">DELETE</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Użytkownik nie głosował wcześniej na wpis.&quot;</span><span class="p">,</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Nie odnaleziono wpisu.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.get_entries_newer">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_entries_newer">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_entries_newer</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">entry_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Zwraca liczbę nowszych wpisów.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (int): Identyfikator wpisu</span>
+<span class="sd">            category (str | None, optional): Kategoria. Defaults to None.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Liczba nowszych wpisów.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">/newer&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">NotEmptyDict</span><span class="p">()</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;category&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">category</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Nie odnaleziono wpisu.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span>  <span class="c1"># type: ignore</span></div>
+
+
+    <span class="c1"># Mikroblog - Komentarz</span>
+
+<div class="viewcode-block" id="WykopAPI.get_entry_comments">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_entry_comments">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_entry_comments</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">entry_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">page_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Comment</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lista komentarzy do wpisu z mikrobloga</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (int): Identyfikator wpisu</span>
+<span class="sd">            page (int, optional): Numer strony do pobrania.</span>
+<span class="sd">                Defaults to 1.</span>
+<span class="sd">            page_count (int, optional): Liczba stron do pobrania.</span>
+<span class="sd">                Podaj -1, żeby pobrać wszystko. Defaults to 1.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Comment]: _description_</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">/comments&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request_with_pagination</span><span class="p">(</span>
+            <span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">,</span> <span class="n">page_count</span><span class="o">=</span><span class="n">page_count</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.post_entry_comment">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.post_entry_comment">[docs]</a>
+    <span class="k">def</span> <span class="nf">post_entry_comment</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">entry_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">embed</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">photo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">adult</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Comment</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dodawanie nowego komentarza do wpisu na mikroblogu</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (int): Identyfikator wpisu</span>
+<span class="sd">            content (str): Treść własna użytkownika. Treść może być pusta w</span>
+<span class="sd">                przypadku dodania innych multimediów.</span>
+<span class="sd">                W przypadku samej treści musi zawierać min. 5 znaków.</span>
+<span class="sd">            embed (str | None, optional): Unikatowy identyfikator pliku.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            photo (str | None, optional): Załącznik użytkownika. W celu</span>
+<span class="sd">                dodania należy podać &quot;key&quot; pliku z media/photo.</span>
+<span class="sd">                Akceptowane są tylko pliki przesłane jako typ comments.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            adult (bool, optional): Komentarz tylko dla dorosłych.</span>
+<span class="sd">                Defaults to False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Comment: Dodany komentarz</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">/comments&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">NotEmptyDict</span><span class="p">()</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;embed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">embed</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;photo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">photo</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;adult&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adult</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Nie odnaleziono znaleziska lub komentarza&quot;</span><span class="p">,</span>
+                <span class="mi">409</span><span class="p">:</span> <span class="s2">&quot;Wystąpił błąd podczas walidacji formularza.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.get_entry_comment">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_entry_comment">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_entry_comment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">comment_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Comment</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Zwraca komentarz z mikroblogu.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (int): Identyfikator wpisu</span>
+<span class="sd">            comment_id (int): Identyfikator komentarza</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Comment: Komentarz z mikroblogu</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">/comments/</span><span class="si">{</span><span class="n">comment_id</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Nie odnaleziono wpisu lub komentarza.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.put_entry_comment">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.put_entry_comment">[docs]</a>
+    <span class="k">def</span> <span class="nf">put_entry_comment</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">entry_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">comment_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">embed</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">photo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">adult</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Comment</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dodawanie nowego komentarza do wpisu na mikroblogu.</span>
+<span class="sd">        Można modyfikwać tylko własne komentarze.</span>
+<span class="sd">        Autor może modyfikować komentarz 15 minut od daty dodania.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (int): Identyfikator wpisu</span>
+<span class="sd">            comment_id (int): Identyfikator komentarza</span>
+<span class="sd">            content (str): Treść własna użytkownika. Treść może być pusta w</span>
+<span class="sd">                przypadku dodania innych multimediów.</span>
+<span class="sd">                W przypadku samej treści musi zawierać min. 5 znaków.</span>
+<span class="sd">            embed (str | None, optional): Unikatowy identyfikator pliku.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            photo (str | None, optional): Załącznik użytkownika. W celu</span>
+<span class="sd">                dodania należy podać &quot;key&quot; pliku z media/photo.</span>
+<span class="sd">                Akceptowane są tylko pliki przesłane jako typ comments.</span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            adult (bool, optional): Komentarz tylko dla dorosłych.</span>
+<span class="sd">                Defaults to False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Comment: Zmodyfikowany komentarz</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">/comments/</span><span class="si">{</span><span class="n">comment_id</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">NotEmptyDict</span><span class="p">()</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;embed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">embed</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;photo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">photo</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;adult&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adult</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">PUT</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Brak uprawnień do modyfikacji komentarza.&quot;</span><span class="p">,</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Nie odnaleziono wpisu lub komentarza.&quot;</span><span class="p">,</span>
+                <span class="mi">409</span><span class="p">:</span> <span class="s2">&quot;Wystąpił błąd podczas walidacji formularza.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.delete_entry_comment">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.delete_entry_comment">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_entry_comment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">comment_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Usuwanie komentarza</span>
+<span class="sd">        Autor komentarza może go usunąć 15 minut od daty</span>
+<span class="sd">        dodania lub autor wpisu przez cały czas.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (int): Identyfikator wpisu</span>
+<span class="sd">            comment_id (int): Identyfikator komentarza</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">/comments/</span><span class="si">{</span><span class="n">comment_id</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">DELETE</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Brak uprawnień do usunięcia komentarza.&quot;</span><span class="p">,</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Nie odnaleziono wpisu lub komentarza.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.get_entry_comment_votes">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.get_entry_comment_votes">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_entry_comment_votes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">entry_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">comment_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">User</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pobiera użytkowników którzy głosowali na komentarz z mikroblogu.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (int): Identyfikator wpisu</span>
+<span class="sd">            comment_id (int): Identyfikator komentarza</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[User]: Lista głosujących użytkowników</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">/comments/</span><span class="si">{</span><span class="n">comment_id</span><span class="si">}</span><span class="s2">/votes&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Nie odnaleziono wpisu lub komentarza.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.post_entry_comment_vote">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.post_entry_comment_vote">[docs]</a>
+    <span class="k">def</span> <span class="nf">post_entry_comment_vote</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">comment_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Głosowanie na wpis</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (int): Identyfikator wpisu</span>
+<span class="sd">            comment_id (int): Identyfikator komentarza</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">/comments/</span><span class="si">{</span><span class="n">comment_id</span><span class="si">}</span><span class="s2">/votes&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Użytkownik głosował wcześniej na komentarz&quot;</span>
+                <span class="s2">&quot;lub jest jego autorem.&quot;</span><span class="p">,</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Nie odnaleziono wpisu lub komentarza.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.delete_entry_comment_vote">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.delete_entry_comment_vote">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_entry_comment_vote</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">comment_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cofnięcie głosu na komentarz</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            entry_id (int): Identyfikator wpisu</span>
+<span class="sd">            comment_id (int): Identyfikator komentarza</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;entries/</span><span class="si">{</span><span class="n">entry_id</span><span class="si">}</span><span class="s2">/comments/</span><span class="si">{</span><span class="n">comment_id</span><span class="si">}</span><span class="s2">/votes&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">DELETE</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Użytkownik nie głosował wcześniej na komentarz.&quot;</span><span class="p">,</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Nie odnaleziono wpisu lub komentarza.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span></div>
+
+
+    <span class="c1"># Media - Zdjęcia</span>
+<div class="viewcode-block" id="WykopAPI.post_media_photo">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.post_media_photo">[docs]</a>
+    <span class="k">def</span> <span class="nf">post_media_photo</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">media_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">photo</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">photo_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">photo_type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Photo</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wgrywanie nowego pliku na serwer</span>
+<span class="sd">        Dozwolone jest wgrywanie multimedialnych plików o następujących</span>
+<span class="sd">        mimetype: &#39;image/jpeg&#39;, &#39;image/jpg&#39;, &#39;image/pjpeg&#39;, &#39;image/gif&#39;,</span>
+<span class="sd">        &#39;image/png&#39;, &#39;image/x-png&#39;. Maksymalny rozmiar pliku to 10 MB.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            media_type (str): Nazwa obszaru z plikami na serwerze</span>
+<span class="sd">                [settings, comments, links, content]</span>
+<span class="sd">            photo (bytes): Plik do wysłania</span>
+<span class="sd">            photo_name (str): Nazwa pliku</span>
+<span class="sd">            photo_type (str): mimetype</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="s2">&quot;media/photos/upload&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">NotEmptyDict</span><span class="p">()</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">media_type</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">photo_name</span><span class="p">,</span> <span class="n">photo</span><span class="p">,</span> <span class="n">photo_type</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+            <span class="n">Methods</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Nie załączono pliku.&quot;</span><span class="p">,</span>
+                <span class="mi">413</span><span class="p">:</span> <span class="s2">&quot;Za duży plik.&quot;</span><span class="p">,</span>
+                <span class="mi">415</span><span class="p">:</span> <span class="s2">&quot;Nieobsługiwane mime type.&quot;</span><span class="p">,</span>
+                <span class="mi">429</span><span class="p">:</span> <span class="s2">&quot;Za dużo prób dodania zdjęcia w którtkim okresie czasu.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.post_media_photo_by_url">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.post_media_photo_by_url">[docs]</a>
+    <span class="k">def</span> <span class="nf">post_media_photo_by_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">media_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">photo_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Photo</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wgrywanie wskazanego pliku przez URL na serwer</span>
+<span class="sd">        Dozwolone jest wgrywanie multimedialnych plików o następujących</span>
+<span class="sd">        mimetype: &#39;image/jpeg&#39;, &#39;image/jpg&#39;, &#39;image/pjpeg&#39;, &#39;image/gif&#39;,</span>
+<span class="sd">        &#39;image/png&#39;, &#39;image/x-png&#39;. Maksymalny rozmiar pliku to 10 MB.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            media_type (str): Nazwa obszaru z plikami na serwerze</span>
+<span class="sd">                [settings, comments, links, content]</span>
+<span class="sd">            photo_url (str): Adres na jakim znajduję się obrazek</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="s2">&quot;media/photos&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">NotEmptyDict</span><span class="p">()</span>
+        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">media_type</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">NotEmptyDict</span><span class="p">()</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">photo_url</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+            <span class="n">Methods</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Nie załączono pliku.&quot;</span><span class="p">,</span>
+                <span class="mi">409</span><span class="p">:</span> <span class="s2">&quot;Wystąpił błąd podczas walidacji formularza&quot;</span><span class="p">,</span>
+                <span class="mi">413</span><span class="p">:</span> <span class="s2">&quot;Za duży plik.&quot;</span><span class="p">,</span>
+                <span class="mi">415</span><span class="p">:</span> <span class="s2">&quot;Nieobsługiwane mime type.&quot;</span><span class="p">,</span>
+                <span class="mi">429</span><span class="p">:</span> <span class="s2">&quot;Za dużo prób dodania zdjęcia w którtkim okresie czasu.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># type: ignore</span></div>
+
+
+<div class="viewcode-block" id="WykopAPI.delete_media_photo">
+<a class="viewcode-back" href="../../api.html#pywykop3.api.WykopAPI.delete_media_photo">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_media_photo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">photo_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Usunięcie pliku</span>
+<span class="sd">        Właściciel pliku posiada możliwość jego usunięcia z serwera.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            photo_key (str): Identyfikator pliku</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;media/photos/</span><span class="si">{</span><span class="n">photo_key</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">Methods</span><span class="o">.</span><span class="n">DELETE</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_if_needed</span><span class="p">(</span>
+            <span class="n">res</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="mi">400</span><span class="p">:</span> <span class="s2">&quot;Brak uprawnień do usunięcia pliku.&quot;</span><span class="p">,</span>
+                <span class="mi">404</span><span class="p">:</span> <span class="s2">&quot;Plik nie został odnaleziony lub neleży &quot;</span>
+                <span class="s2">&quot;do innego użytkownika.&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mateusz Rynkiewicz.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

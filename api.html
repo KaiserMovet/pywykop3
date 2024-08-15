@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pywykop3.api module &mdash; pywykop3 0.7.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=fe7df9b0"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pywykop3.connector module" href="connector.html" />
+    <link rel="prev" title="Welcome to pywykop3’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pywykop3
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">pywykop3.api module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pywykop3.api.ApiException"><code class="docutils literal notranslate"><span class="pre">ApiException</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pywykop3.api.WykopAPI"><code class="docutils literal notranslate"><span class="pre">WykopAPI</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.connect"><code class="docutils literal notranslate"><span class="pre">WykopAPI.connect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.delete_entry_by_id"><code class="docutils literal notranslate"><span class="pre">WykopAPI.delete_entry_by_id()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.delete_entry_comment"><code class="docutils literal notranslate"><span class="pre">WykopAPI.delete_entry_comment()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.delete_entry_comment_vote"><code class="docutils literal notranslate"><span class="pre">WykopAPI.delete_entry_comment_vote()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.delete_entry_vote"><code class="docutils literal notranslate"><span class="pre">WykopAPI.delete_entry_vote()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.delete_media_photo"><code class="docutils literal notranslate"><span class="pre">WykopAPI.delete_media_photo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.delete_tag_user"><code class="docutils literal notranslate"><span class="pre">WykopAPI.delete_tag_user()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_entries"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_entries()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_entries_newer"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_entries_newer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_entry_by_id"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_entry_by_id()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_entry_comment"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_entry_comment()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_entry_comment_votes"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_entry_comment_votes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_entry_comments"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_entry_comments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_entry_votes"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_entry_votes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_tag"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_tag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_tag_newer"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_tag_newer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_tag_stream"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_tag_stream()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_tag_users"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_tag_users()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_tags_autocomplete"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_tags_autocomplete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_tags_popular"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_tags_popular()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_tags_popular_user_tags"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_tags_popular_user_tags()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_tags_related"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_tags_related()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.get_users_autocomplete"><code class="docutils literal notranslate"><span class="pre">WykopAPI.get_users_autocomplete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.post_entry"><code class="docutils literal notranslate"><span class="pre">WykopAPI.post_entry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.post_entry_comment"><code class="docutils literal notranslate"><span class="pre">WykopAPI.post_entry_comment()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.post_entry_comment_vote"><code class="docutils literal notranslate"><span class="pre">WykopAPI.post_entry_comment_vote()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.post_entry_vote"><code class="docutils literal notranslate"><span class="pre">WykopAPI.post_entry_vote()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.post_media_photo"><code class="docutils literal notranslate"><span class="pre">WykopAPI.post_media_photo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.post_media_photo_by_url"><code class="docutils literal notranslate"><span class="pre">WykopAPI.post_media_photo_by_url()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.post_tag_user"><code class="docutils literal notranslate"><span class="pre">WykopAPI.post_tag_user()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.put_entry"><code class="docutils literal notranslate"><span class="pre">WykopAPI.put_entry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.put_entry_comment"><code class="docutils literal notranslate"><span class="pre">WykopAPI.put_entry_comment()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.put_tag"><code class="docutils literal notranslate"><span class="pre">WykopAPI.put_tag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pywykop3.api.WykopAPI.raise_error_if_needed"><code class="docutils literal notranslate"><span class="pre">WykopAPI.raise_error_if_needed()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="connector.html">pywykop3.connector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">pywykop3.utils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pywykop3</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pywykop3.api module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pywykop3.api">
+<span id="pywykop3-api-module"></span><h1>pywykop3.api module<a class="headerlink" href="#module-pywykop3.api" title="Link to this heading"></a></h1>
+<dl class="py exception">
+<dt class="sig sig-object py" id="pywykop3.api.ApiException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pywykop3.api.</span></span><span class="sig-name descname"><span class="pre">ApiException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywykop3/api.html#ApiException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.ApiException" title="Link to this definition"></a></dt>
+<dd><p>This exception is raised by <a class="reference internal" href="#pywykop3.api.WykopAPI" title="pywykop3.api.WykopAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">WykopAPI</span></code></a> when code of request is other than 2xx.
+Exception has 2 additional attributes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>stacode - response code of request</p></li>
+<li><p>api_msg - message</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pywykop3.api.</span></span><span class="sig-name descname"><span class="pre">WykopAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="connector.html#pywykop3.connector.WykopConnector" title="pywykop3.connector.WykopConnector"><span class="pre">WykopConnector</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refresh_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI" title="Link to this definition"></a></dt>
+<dd><p>Main interface to communicate with Wykop
+You need to provide</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>connector</p></li>
+</ul>
+<p>OR</p>
+<ul class="simple">
+<li><p>key</p></li>
+<li><p>secret</p></li>
+</ul>
+<p>OR</p>
+<ul class="simple">
+<li><p>refresh token</p></li>
+</ul>
+</div></blockquote>
+<p>If you pass key and secret, Wykop will provide information as
+for non-logged in users.
+If you refresh_token, Wykop will provide information as
+for logged in users.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>connector</strong> (<a class="reference internal" href="connector.html#pywykop3.connector.WykopConnector" title="pywykop3.connector.WykopConnector"><em>WykopConnector</em></a><em> | </em><em>None</em><em>, </em><em>optional</em>) – Connector object. Can be safely ignored.
+Defaults to None.</p></li>
+<li><p><strong>key</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Key. Defaults to None.</p></li>
+<li><p><strong>secret</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Secret. Defaults to None.</p></li>
+<li><p><strong>refresh_token</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Refresh token. To obtain it,
+see <a class="reference internal" href="#pywykop3.api.WykopAPI.connect" title="pywykop3.api.WykopAPI.connect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">connect()</span></code></a> method. Defaults to None.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.connect" title="Link to this definition"></a></dt>
+<dd><p>Istnieje możliwość zalogowania użytkownika przy użyciu WykopConnect.
+Aplikacja która próbuje zalogować użytkownika powinna posiadać
+odpowiednie uprawnienia nadane przez administratora.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.delete_entry_by_id">
+<span class="sig-name descname"><span class="pre">delete_entry_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.delete_entry_by_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.delete_entry_by_id" title="Link to this definition"></a></dt>
+<dd><p>Usuwanie wpisu. Autor może zawsze usunąć własny wpis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>entry_id</strong> (<em>int</em>) – Identyfikator wpisu</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.delete_entry_comment">
+<span class="sig-name descname"><span class="pre">delete_entry_comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.delete_entry_comment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.delete_entry_comment" title="Link to this definition"></a></dt>
+<dd><p>Usuwanie komentarza
+Autor komentarza może go usunąć 15 minut od daty
+dodania lub autor wpisu przez cały czas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry_id</strong> (<em>int</em>) – Identyfikator wpisu</p></li>
+<li><p><strong>comment_id</strong> (<em>int</em>) – Identyfikator komentarza</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.delete_entry_comment_vote">
+<span class="sig-name descname"><span class="pre">delete_entry_comment_vote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.delete_entry_comment_vote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.delete_entry_comment_vote" title="Link to this definition"></a></dt>
+<dd><p>Cofnięcie głosu na komentarz</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry_id</strong> (<em>int</em>) – Identyfikator wpisu</p></li>
+<li><p><strong>comment_id</strong> (<em>int</em>) – Identyfikator komentarza</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.delete_entry_vote">
+<span class="sig-name descname"><span class="pre">delete_entry_vote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.delete_entry_vote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.delete_entry_vote" title="Link to this definition"></a></dt>
+<dd><p>Cofnięcie głosu na wpis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>entry_id</strong> (<em>str</em>) – Identyfikator wpisu</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.delete_media_photo">
+<span class="sig-name descname"><span class="pre">delete_media_photo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">photo_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.delete_media_photo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.delete_media_photo" title="Link to this definition"></a></dt>
+<dd><p>Usunięcie pliku
+Właściciel pliku posiada możliwość jego usunięcia z serwera.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>photo_key</strong> (<em>str</em>) – Identyfikator pliku</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.delete_tag_user">
+<span class="sig-name descname"><span class="pre">delete_tag_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.delete_tag_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.delete_tag_user" title="Link to this definition"></a></dt>
+<dd><p>Usuwanie współautora tagu (głównego dodaje moderator)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tag_name</strong> (<em>str</em>) – Nazwa tagu</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – Nazwa użytkownika</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_entries">
+<span class="sig-name descname"><span class="pre">get_entries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'hot'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Entry</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_entries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_entries" title="Link to this definition"></a></dt>
+<dd><p>Zwraca wpisy z mikrobloga. UWAGA: Parametr page przyjmuje dla
+użytkowników niezalogowanych int z numerem strony, a dla zalogowanych
+hash strony. UWAGA2: Standardowa paginacja jest dostępna tylko dla
+użytkowników niezalogowanych. Paginacja dla użytkowników zalogowanych
+będzie zwracać hash next dla następnej strony i prev dla poprzedniej.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sort</strong> (<em>str</em><em>, </em><em>optional</em>) – Rodzaj sortowania.
+Available values : newest, active, hot. Defaults to “hot”.</p></li>
+<li><p><strong>last_update</strong> (<em>int</em><em>, </em><em>optional</em>) – Pokaż wyniki z ostatnich godzin
+[1, 2, 3, 6, 12, 24]. Filtr dostępny tylko wraz z filtrem gorące.
+Defaults to 12.</p></li>
+<li><p><strong>page_count</strong> (<em>int</em><em>, </em><em>optional</em>) – Liczba stron do pobrania.
+Podaj -1, żeby pobrać wszystko. Defaults to 1.</p></li>
+<li><p><strong>page</strong> (<em>int</em><em> | </em><em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Numer strony do pobrania.
+Defaults to None.</p></li>
+<li><p><strong>category</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Kategoria.
+Defaults to None.</p></li>
+<li><p><strong>bucket</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Hash kategorii użytkownika. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Wpisy z mikrobloga.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_entries_newer">
+<span class="sig-name descname"><span class="pre">get_entries_newer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_entries_newer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_entries_newer" title="Link to this definition"></a></dt>
+<dd><p>Zwraca liczbę nowszych wpisów.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry_id</strong> (<em>int</em>) – Identyfikator wpisu</p></li>
+<li><p><strong>category</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Kategoria. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Liczba nowszych wpisów.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_entry_by_id">
+<span class="sig-name descname"><span class="pre">get_entry_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Entry</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_entry_by_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_entry_by_id" title="Link to this definition"></a></dt>
+<dd><p>Zwraca wpisz z mikrobloga.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>entry_id</strong> (<em>int</em>) – Identyfikator wpisu</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Wpis z mikrobloga</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_entry_comment">
+<span class="sig-name descname"><span class="pre">get_entry_comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Comment</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_entry_comment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_entry_comment" title="Link to this definition"></a></dt>
+<dd><p>Zwraca komentarz z mikroblogu.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry_id</strong> (<em>int</em>) – Identyfikator wpisu</p></li>
+<li><p><strong>comment_id</strong> (<em>int</em>) – Identyfikator komentarza</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Komentarz z mikroblogu</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Comment</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_entry_comment_votes">
+<span class="sig-name descname"><span class="pre">get_entry_comment_votes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">User</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_entry_comment_votes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_entry_comment_votes" title="Link to this definition"></a></dt>
+<dd><p>Pobiera użytkowników którzy głosowali na komentarz z mikroblogu.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry_id</strong> (<em>int</em>) – Identyfikator wpisu</p></li>
+<li><p><strong>comment_id</strong> (<em>int</em>) – Identyfikator komentarza</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Lista głosujących użytkowników</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[User]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_entry_comments">
+<span class="sig-name descname"><span class="pre">get_entry_comments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Comment</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_entry_comments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_entry_comments" title="Link to this definition"></a></dt>
+<dd><p>Lista komentarzy do wpisu z mikrobloga</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry_id</strong> (<em>int</em>) – Identyfikator wpisu</p></li>
+<li><p><strong>page</strong> (<em>int</em><em>, </em><em>optional</em>) – Numer strony do pobrania.
+Defaults to 1.</p></li>
+<li><p><strong>page_count</strong> (<em>int</em><em>, </em><em>optional</em>) – Liczba stron do pobrania.
+Podaj -1, żeby pobrać wszystko. Defaults to 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Comment]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_entry_votes">
+<span class="sig-name descname"><span class="pre">get_entry_votes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">User</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_entry_votes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_entry_votes" title="Link to this definition"></a></dt>
+<dd><p>Pobiera nazwy użytkowników którzy głosowali na wpis z mikrobloga.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>entry_id</strong> (<em>int</em>) – Identyfikator wpisu</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Lista użytkowników, który oddali głos.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_tag">
+<span class="sig-name descname"><span class="pre">get_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_tag_newer">
+<span class="sig-name descname"><span class="pre">get_tag_newer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_of_content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'best'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_tag_newer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_tag_newer" title="Link to this definition"></a></dt>
+<dd><p>Zwraca informację, czy są wpisy, linki w tagu</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tag_name</strong> (<em>str</em>) – Nazwa tagu</p></li>
+<li><p><strong>type_of_content</strong> (<em>str</em><em>, </em><em>optional</em>) – Rodzaj. Available values : “all”,</p></li>
+<li><p><strong>&quot;author&quot;</strong></p></li>
+<li><p><strong>&quot;link&quot;</strong></p></li>
+<li><p><strong>&quot;all&quot;.</strong> (<em>&quot;entry&quot;. Defaults to</em>)</p></li>
+<li><p><strong>sort</strong> (<em>str</em><em>, </em><em>optional</em>) – Rodzaj sortowania. Available values : “all”,</p></li>
+<li><p><strong>&quot;best&quot;.</strong> (<em>&quot;best&quot;. Defaults to</em>)</p></li>
+<li><p><strong>date</strong> (<em>datetime</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Data, od której sprawdzamy, czy</p></li>
+<li><p><strong>None.</strong> (<em>wpisu lub znaleziska. Defaults to</em>)</p></li>
+<li><p><strong>obj_id</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Identyfikator ostatniego widzianego</p></li>
+<li><p><strong>None.</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Licznik nowych obiektów</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_tag_stream">
+<span class="sig-name descname"><span class="pre">get_tag_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'best'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_of_content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_tag_stream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_tag_stream" title="Link to this definition"></a></dt>
+<dd><p>Zwraca pełną liste wpisów i znalezisk z konkretnego tagu</p>
+<p>UWAGA: Parametr page przyjmuje dla użytkowników niezalogowanych int z
+numerem strony, a dla zalogowanych hash strony.</p>
+<p>UWAGA2: Standardowa paginacja jest dostępna tylko dla użytkowników
+niezalogowanych. Paginacja dla użytkowników zalogowanych będzie
+zwracać hash next dla następnej strony i prev dla poprzedniej.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tag_name</strong> (<em>str</em>) – Nazwa tagu</p></li>
+<li><p><strong>page</strong> (<em>int</em><em> | </em><em>str</em><em>| </em><em>None</em>) – Numer strony do pobrania. Defaults to None.</p></li>
+<li><p><strong>sort</strong> (<em>str</em><em>, </em><em>optional</em>) – Rodzaj sortowania. Available values : “all”,</p></li>
+<li><p><strong>&quot;best&quot;.</strong> (<em>&quot;best&quot;. Defaults to</em>)</p></li>
+<li><p><strong>type_of_content</strong> (<em>str</em><em>, </em><em>optional</em>) – Rodzaj. Available values : “all”,</p></li>
+<li><p><strong>&quot;author&quot;</strong></p></li>
+<li><p><strong>&quot;link&quot;</strong></p></li>
+<li><p><strong>&quot;all&quot;.</strong> (<em>&quot;entry&quot;. Defaults to</em>)</p></li>
+<li><p><strong>year</strong> (<em>int</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Rok. Defaults to None.</p></li>
+<li><p><strong>month</strong> (<em>int</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Miesiąc. Defaults to None.</p></li>
+<li><p><strong>page_count</strong> (<em>int</em><em>, </em><em>optional</em>) – Liczba stron do pobrania.</p></li>
+<li><p><strong>-1</strong> (<em>Podaj</em>)</p></li>
+<li><p><strong>1.</strong> (<em>żeby pobrać wszystko. Defaults to</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Lista wpisów i znalezisk</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_tag_users">
+<span class="sig-name descname"><span class="pre">get_tag_users</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_tag_users"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_tag_users" title="Link to this definition"></a></dt>
+<dd><p>Lista autorów tagu autorskiego</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tag_name</strong> (<em>str</em>) – Nazwa tagu</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Kolekcja autorów tagu (short profile)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_tags_autocomplete">
+<span class="sig-name descname"><span class="pre">get_tags_autocomplete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_tags_autocomplete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_tags_autocomplete" title="Link to this definition"></a></dt>
+<dd><p>Podpowiada tagi.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>query</strong> (<em>str</em>) – Zapytanie</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Kolekcja wyszukanych tagów (max do 10 wyników)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_tags_popular">
+<span class="sig-name descname"><span class="pre">get_tags_popular</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_tags_popular"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_tags_popular" title="Link to this definition"></a></dt>
+<dd><p>Zwraca listę popularnych tagów.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Lista tagów</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_tags_popular_user_tags">
+<span class="sig-name descname"><span class="pre">get_tags_popular_user_tags</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_tags_popular_user_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_tags_popular_user_tags" title="Link to this definition"></a></dt>
+<dd><p>Zwraca listę popularnych tagów autorskich.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Kolekcja popularnych tagów autorskich (max do 10 wyników)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_tags_related">
+<span class="sig-name descname"><span class="pre">get_tags_related</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_tags_related"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_tags_related" title="Link to this definition"></a></dt>
+<dd><p>Powiązane tagi</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tag_name</strong> (<em>str</em>) – Nazwa tagu</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Kolekcja powiązanych tagów (max do 10 wyników)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.get_users_autocomplete">
+<span class="sig-name descname"><span class="pre">get_users_autocomplete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.get_users_autocomplete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.get_users_autocomplete" title="Link to this definition"></a></dt>
+<dd><p>Podpowiada użytkowników po nickname</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>query</strong> (<em>str</em>) – Zapytanie</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Kolekcja wyszukanych użytkowników</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.post_entry">
+<span class="sig-name descname"><span class="pre">post_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">survey</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adult</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Entry</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.post_entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.post_entry" title="Link to this definition"></a></dt>
+<dd><p>Dodawanie nowego wpisu na mikroblogu</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>content</strong> (<em>str</em>) – Treść własna użytkownika.</p></li>
+<li><p><strong>photo</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Załącznik użytkownika.
+W celu dodania należy podać “key” pliku z media/photo.
+Akceptowane są tylko pliki przesłane jako typ comments.
+Defaults to None.</p></li>
+<li><p><strong>embed</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Unikatowy identyfikator embed.
+Defaults to None.</p></li>
+<li><p><strong>survey</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Ankieta użytkownika.
+W celu dodania należy podać Indentyfikator. Defaults to None.</p></li>
+<li><p><strong>adult</strong> (<em>bool</em><em>, </em><em>optional</em>) – Wpis tylko dla dorosłych. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dodany wpis</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.post_entry_comment">
+<span class="sig-name descname"><span class="pre">post_entry_comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adult</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Comment</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.post_entry_comment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.post_entry_comment" title="Link to this definition"></a></dt>
+<dd><p>Dodawanie nowego komentarza do wpisu na mikroblogu</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry_id</strong> (<em>int</em>) – Identyfikator wpisu</p></li>
+<li><p><strong>content</strong> (<em>str</em>) – Treść własna użytkownika. Treść może być pusta w
+przypadku dodania innych multimediów.
+W przypadku samej treści musi zawierać min. 5 znaków.</p></li>
+<li><p><strong>embed</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Unikatowy identyfikator pliku.
+Defaults to None.</p></li>
+<li><p><strong>photo</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Załącznik użytkownika. W celu
+dodania należy podać “key” pliku z media/photo.
+Akceptowane są tylko pliki przesłane jako typ comments.
+Defaults to None.</p></li>
+<li><p><strong>adult</strong> (<em>bool</em><em>, </em><em>optional</em>) – Komentarz tylko dla dorosłych.
+Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dodany komentarz</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Comment</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.post_entry_comment_vote">
+<span class="sig-name descname"><span class="pre">post_entry_comment_vote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.post_entry_comment_vote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.post_entry_comment_vote" title="Link to this definition"></a></dt>
+<dd><p>Głosowanie na wpis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry_id</strong> (<em>int</em>) – Identyfikator wpisu</p></li>
+<li><p><strong>comment_id</strong> (<em>int</em>) – Identyfikator komentarza</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.post_entry_vote">
+<span class="sig-name descname"><span class="pre">post_entry_vote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.post_entry_vote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.post_entry_vote" title="Link to this definition"></a></dt>
+<dd><p>Głosowanie na wpis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>entry_id</strong> (<em>int</em>) – Identyfikator wpisu</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.post_media_photo">
+<span class="sig-name descname"><span class="pre">post_media_photo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">media_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photo_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photo_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Photo</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.post_media_photo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.post_media_photo" title="Link to this definition"></a></dt>
+<dd><p>Wgrywanie nowego pliku na serwer
+Dozwolone jest wgrywanie multimedialnych plików o następujących
+mimetype: ‘image/jpeg’, ‘image/jpg’, ‘image/pjpeg’, ‘image/gif’,
+‘image/png’, ‘image/x-png’. Maksymalny rozmiar pliku to 10 MB.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>media_type</strong> (<em>str</em>) – Nazwa obszaru z plikami na serwerze
+[settings, comments, links, content]</p></li>
+<li><p><strong>photo</strong> (<em>bytes</em>) – Plik do wysłania</p></li>
+<li><p><strong>photo_name</strong> (<em>str</em>) – Nazwa pliku</p></li>
+<li><p><strong>photo_type</strong> (<em>str</em>) – mimetype</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.post_media_photo_by_url">
+<span class="sig-name descname"><span class="pre">post_media_photo_by_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">media_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photo_url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Photo</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.post_media_photo_by_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.post_media_photo_by_url" title="Link to this definition"></a></dt>
+<dd><p>Wgrywanie wskazanego pliku przez URL na serwer
+Dozwolone jest wgrywanie multimedialnych plików o następujących
+mimetype: ‘image/jpeg’, ‘image/jpg’, ‘image/pjpeg’, ‘image/gif’,
+‘image/png’, ‘image/x-png’. Maksymalny rozmiar pliku to 10 MB.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>media_type</strong> (<em>str</em>) – Nazwa obszaru z plikami na serwerze
+[settings, comments, links, content]</p></li>
+<li><p><strong>photo_url</strong> (<em>str</em>) – Adres na jakim znajduję się obrazek</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.post_tag_user">
+<span class="sig-name descname"><span class="pre">post_tag_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.post_tag_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.post_tag_user" title="Link to this definition"></a></dt>
+<dd><p>Dodanie nowego współautora tagu (głównego dodaje moderator)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tag_name</strong> (<em>str</em>) – Nazwa tagu</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – Nazwa użytkownika</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.put_entry">
+<span class="sig-name descname"><span class="pre">put_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">survey</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adult</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Entry</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.put_entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.put_entry" title="Link to this definition"></a></dt>
+<dd><p>Edycja wpisu na mikroblogu. Można modyfikwać tylko własne wpisy.
+Autor może modyfikować wpis przez 15 minut od daty dodania.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry_id</strong> (<em>int</em>) – Identyfikator wpisu</p></li>
+<li><p><strong>content</strong> (<em>str</em>) – Treść własna użytkownika.</p></li>
+<li><p><strong>photo</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Załącznik użytkownika.
+W celu dodania należy podać “key” pliku z media/photo.
+Akceptowane są tylko pliki przesłane jako typ comments.
+Defaults to None.</p></li>
+<li><p><strong>embed</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Unikatowy identyfikator embed.
+Defaults to None.</p></li>
+<li><p><strong>survey</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Ankieta użytkownika.
+W celu dodania należy podać Indentyfikator. Defaults to None.</p></li>
+<li><p><strong>adult</strong> (<em>bool</em><em>, </em><em>optional</em>) – Wpis tylko dla dorosłych. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dodany wpis</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.put_entry_comment">
+<span class="sig-name descname"><span class="pre">put_entry_comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entry_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">photo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adult</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Comment</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.put_entry_comment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.put_entry_comment" title="Link to this definition"></a></dt>
+<dd><p>Dodawanie nowego komentarza do wpisu na mikroblogu.
+Można modyfikwać tylko własne komentarze.
+Autor może modyfikować komentarz 15 minut od daty dodania.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entry_id</strong> (<em>int</em>) – Identyfikator wpisu</p></li>
+<li><p><strong>comment_id</strong> (<em>int</em>) – Identyfikator komentarza</p></li>
+<li><p><strong>content</strong> (<em>str</em>) – Treść własna użytkownika. Treść może być pusta w
+przypadku dodania innych multimediów.
+W przypadku samej treści musi zawierać min. 5 znaków.</p></li>
+<li><p><strong>embed</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Unikatowy identyfikator pliku.
+Defaults to None.</p></li>
+<li><p><strong>photo</strong> (<em>str</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Załącznik użytkownika. W celu
+dodania należy podać “key” pliku z media/photo.
+Akceptowane są tylko pliki przesłane jako typ comments.
+Defaults to None.</p></li>
+<li><p><strong>adult</strong> (<em>bool</em><em>, </em><em>optional</em>) – Komentarz tylko dla dorosłych.
+Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Zmodyfikowany komentarz</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Comment</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.put_tag">
+<span class="sig-name descname"><span class="pre">put_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.put_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.put_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pywykop3.api.WykopAPI.raise_error_if_needed">
+<span class="sig-name descname"><span class="pre">raise_error_if_needed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">res</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="connector.html#pywykop3.connector.WykopResponse" title="pywykop3.connector.WykopResponse"><span class="pre">WykopResponse</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pywykop3/api.html#WykopAPI.raise_error_if_needed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pywykop3.api.WykopAPI.raise_error_if_needed" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to pywykop3’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="connector.html" class="btn btn-neutral float-right" title="pywykop3.connector module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mateusz Rynkiewicz.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
