@@ -4,7 +4,7 @@ Python REST API Client for Wykop2 (via api v3)
 
 [![Pylint](https://github.com/KaiserMovet/pywykop3/actions/workflows/pylint.yml/badge.svg)](https://github.com/KaiserMovet/pywykop3/actions/workflows/pylint.yml)
 [![Create Release](https://github.com/KaiserMovet/pywykop3/actions/workflows/create_release.yml/badge.svg)](https://github.com/KaiserMovet/pywykop3/actions/workflows/create_release.yml)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Code style: ](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 Full documentation can be found [HERE](https://kaisermovet.github.io/pywykop3/index.html)
 API documentation can be found [HERE](https://kaisermovet.github.io/pywykop3/api.html)
