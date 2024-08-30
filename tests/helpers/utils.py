@@ -2,6 +2,7 @@ import logging
 import random
 import string
 import time
+from contextlib import contextmanager
 from typing import Any
 
 
@@ -36,3 +37,12 @@ def run_function_with_retry(
             time.sleep(wait_time)
             wait_time *= wait_multiplier
     raise last_exc
+
+
+@contextmanager
+def suppress_exceptions(exception=Exception, *exceptions):
+    exceptions = tuple([exception]) + exceptions
+    try:
+        yield
+    except exceptions:
+        pass

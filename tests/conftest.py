@@ -1,29 +1,40 @@
+import logging
+from typing import Iterator
+
 import pytest
 
 from pywykop3 import WykopAPI
-from tests.helpers import EntryHelper, MediaHelper
 
 
-def pytest_addoption(parser):
-    parser.addoption("--refresh-token", action="store", default="")
+def get_token() -> str:
+    with open("refresh_token.txt", "r", encoding="utf-8") as file:
+        file_content = file.read()  # Wczytanie całej zawartości pliku do zmiennej
+    return file_content
 
 
-@pytest.fixture(scope="session")
-def wykop_api(request):
-    token = request.config.getoption("--refresh-token")
-    api = WykopAPI(refresh_token=token)
-    return api
-
-
-@pytest.fixture(scope="session")
-def entry_helper(wykop_api):  # pylint: disable=redefined-outer-name
-    helper = EntryHelper(wykop_api)
-    yield helper
-    helper.cleanup()
+def save_token(token):
+    with open("refresh_token.txt", "w", encoding="utf-8") as file:
+        file.write(token)  # Zapisuje zawartość zmiennej do pliku
 
 
 @pytest.fixture(scope="session")
-def media_helper(wykop_api):  # pylint: disable=redefined-outer-name
-    helper = MediaHelper(wykop_api)
-    yield helper
-    helper.cleanup()
+def username() -> str:
+    return "Movet"
+
+
+@pytest.fixture(scope="session", name="wykop_api")
+def fixture_wykop_api() -> Iterator[WykopAPI]:
+    token = get_token()
+    api = WykopAPI(
+        refresh_token=token,
+    )
+    yield api
+    if token := api.refresh_token:
+        save_token(token)
+
+
+@pytest.fixture(scope="function")
+def last_microblog_entry_id(wykop_api: WykopAPI) -> int:
+    entry_id = wykop_api.microblog.get_entries(limit=1, sort="newest")["data"][0]["id"]
+    logging.info("Getting last entry with id: %s", entry_id)
+    return entry_id

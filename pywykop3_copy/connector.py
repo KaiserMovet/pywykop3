@@ -27,7 +27,6 @@ class WykopResponse:
 
 
 class WykopConnector:
-
     URL = "https://wykop.pl/api/v3/"
 
     def __init__(
@@ -52,7 +51,7 @@ class WykopConnector:
         """
         self._key = key
         self._secret = secret
-        self.refresh_token = refresh_token
+        self.refresh_token: str | None = refresh_token
         self._token: str | None = self._get_token()
         self.header = {
             "accept": "application/json",

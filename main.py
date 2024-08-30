@@ -1,28 +1,41 @@
 import sys
 from pprint import pprint
+from typing import cast
 
 import logger
 from pywykop3 import WykopAPI
 
 
-def main() -> None:
-    # api = WykopAPI(sys.argv[1], sys.argv[2])
-    # print(api.connect())
+def get_token() -> str:
+    with open("refresh_token.txt", "r", encoding="utf-8") as file:
+        file_content = file.read()  # Wczytanie całej zawartości pliku do zmiennej
+    return file_content
 
-    api = WykopAPI(refresh_token=sys.argv[3])
-    # with open("1.jpg", "rb") as f:
-    #     photo = f.read()
 
-    # print(f"{api.connector._token=}")
-    # res = api.post_media_photo("comments", photo, "xd.jpg", "mage/jpg")
-    res = api.post_media_photo_by_url(
-        "comments",
-        "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg",
+def save_token(token):
+    with open("refresh_token.txt", "w", encoding="utf-8") as file:
+        file.write(token)  # Zapisuje zawartość zmiennej do pliku
+
+
+def main(token: str) -> str | None:
+    api = WykopAPI(
+        refresh_token=token,
     )
+    # res = api.microblog.get_entry(77759901)
+    # res = api.microblog.get_entries(page="d64PN2w0tp6n", sort="newest", limit=1)
+    res = api.microblog.get_newer_entries_amount(77888607)
     pprint(res)
-    api.delete_media_photo(res["key"])
+    pprint(len(res["data"]))
+    return api.refresh_token
 
 
 if __name__ == "__main__":
     logger.init()
-    main()
+    token = get_token()
+    try:
+        token = main(token)
+    except Exception as e:
+        raise e
+    finally:
+        if token:
+            save_token(token)
