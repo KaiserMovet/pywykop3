@@ -1,5 +1,3 @@
-from typing import Iterator
-
 import pytest
 
 from pywykop3 import WykopAPI
