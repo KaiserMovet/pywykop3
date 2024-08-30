@@ -1,8 +1,17 @@
-from typing import Literal, cast
+from typing import Literal, TypedDict, cast
 
 from .methods import HttpMethod
 from .sub_api import DictPaginatedResponse, DictResponse, SubApi
 from .utils import NotEmptyDict
+
+
+class User(TypedDict, total=False):
+    username: str
+
+
+class Entry(TypedDict, total=False):
+    id: int
+    author: User
 
 
 class ApiMicroblog(SubApi):
@@ -14,7 +23,7 @@ class ApiMicroblog(SubApi):
         bucket: str | None = None,
         sort: Literal["newest", "active", "hot"] = "hot",
         last_update: Literal[1, 2, 3, 6, 12, 24] = 12,
-    ) -> DictPaginatedResponse:
+    ) -> DictPaginatedResponse[list[Entry]]:
         params: dict[str, str | int | None] = NotEmptyDict()
         params["page"] = page
         params["limit"] = limit
@@ -23,7 +32,7 @@ class ApiMicroblog(SubApi):
         params["category"] = category
         params["bucket"] = bucket
         return cast(
-            DictPaginatedResponse,
+            DictPaginatedResponse[list[Entry]],
             self.send_request(HttpMethod.GET, url_parts=["entries"], params=params),
         )
 
@@ -40,7 +49,7 @@ class ApiMicroblog(SubApi):
         embed: str | None = None,
         survey: str | None = None,
         adult: bool = False,
-    ) -> DictResponse:
+    ) -> DictResponse[Entry]:
         """
         Dodanie nowego wpisu na mikroblogu
 
@@ -67,7 +76,7 @@ class ApiMicroblog(SubApi):
         body["survey"] = survey
         body["adult"] = adult
         return cast(
-            DictResponse,
+            DictResponse[Entry],
             self.send_request(
                 HttpMethod.POST, url_parts=["entries"], payload={"data": body}
             ),
@@ -81,7 +90,7 @@ class ApiMicroblog(SubApi):
         embed: str | None = None,
         survey: str | None = None,
         adult: bool = False,
-    ) -> DictResponse:
+    ) -> DictResponse[Entry]:
         """
         Dodanie nowego wpisu na mikroblogu
 
@@ -110,7 +119,7 @@ class ApiMicroblog(SubApi):
         body["survey"] = survey
         body["adult"] = adult
         return cast(
-            DictResponse,
+            DictResponse[Entry],
             self.send_request(
                 HttpMethod.PUT, url_parts=["entries", entry_id], payload={"data": body}
             ),
@@ -126,7 +135,7 @@ class ApiMicroblog(SubApi):
         self,
         entry_id: int,
         page: int | str | None = None,
-    ) -> DictPaginatedResponse:
+    ) -> DictPaginatedResponse[list[User]]:
         """_summary_
 
         Args:
@@ -142,7 +151,7 @@ class ApiMicroblog(SubApi):
         params["page"] = page
 
         return cast(
-            DictPaginatedResponse,
+            DictPaginatedResponse[list[User]],
             self.send_request(
                 HttpMethod.GET, url_parts=["entries", entry_id, "votes"], params=params
             ),
@@ -168,11 +177,11 @@ class ApiMicroblog(SubApi):
         self,
         entry_id: int,
         category: str | None = None,
-    ) -> DictResponse:
+    ) -> DictResponse[int]:
         params = NotEmptyDict()
         params["category"] = category
         return cast(
-            DictResponse,
+            DictResponse[int],
             self.send_request(
                 HttpMethod.GET, url_parts=["entries", entry_id, "newer"], params=params
             ),

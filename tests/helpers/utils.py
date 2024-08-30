@@ -44,5 +44,11 @@ def suppress_exceptions(exception=Exception, *exceptions):
     exceptions = tuple([exception]) + exceptions
     try:
         yield
-    except exceptions:
+    except exceptions as exc:
+        logging.error("Exception was raised", exc_info=exc, stack_info=True)
         pass
+
+
+def get_last_5_voters(entry: dict) -> list[str]:
+    voters = [user["username"] for user in entry["votes"]["users"]]
+    return voters

@@ -17,11 +17,6 @@ def save_token(token):
         file.write(token)  # Zapisuje zawartość zmiennej do pliku
 
 
-@pytest.fixture(scope="session")
-def username() -> str:
-    return "Movet"
-
-
 @pytest.fixture(scope="session", name="wykop_api")
 def fixture_wykop_api() -> Iterator[WykopAPI]:
     token = get_token()

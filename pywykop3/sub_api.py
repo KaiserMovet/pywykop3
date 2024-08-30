@@ -1,11 +1,13 @@
-from typing import TYPE_CHECKING, Any, TypedDict
+from typing import TYPE_CHECKING, Generic, TypedDict, TypeVar
 
 if TYPE_CHECKING:
     from .wykop_api import HttpMethod, WykopAPI
 
+T = TypeVar("T")
 
-class DictResponse(TypedDict):
-    data: Any
+
+class DictResponse(Generic[T], TypedDict):
+    data: T
 
 
 class DictPaginationNotLogged(TypedDict):
@@ -18,8 +20,8 @@ class DictPaginationLogged(TypedDict):
     prev: str | None
 
 
-class DictPaginatedResponse(TypedDict):
-    data: Any
+class DictPaginatedResponse(Generic[T], TypedDict):
+    data: T
     pagination: DictPaginationNotLogged | DictPaginationLogged
 
 
