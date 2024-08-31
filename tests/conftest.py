@@ -4,6 +4,7 @@ from typing import Iterator
 import pytest
 
 from pywykop3 import WykopAPI
+from tests.helpers.utils import CommentID
 
 
 def get_token() -> str:
@@ -28,8 +29,28 @@ def fixture_wykop_api() -> Iterator[WykopAPI]:
         save_token(token)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="class")
 def last_microblog_entry_id(wykop_api: WykopAPI) -> int:
     entry_id = wykop_api.microblog.get_entries(limit=1, sort="newest")["data"][0]["id"]
     logging.info("Getting last entry with id: %s", entry_id)
     return entry_id
+
+
+@pytest.fixture(scope="class", name="hottest_microblog_entry_id")
+def fixture_hottest_microblog_entry_id(wykop_api: WykopAPI) -> int:
+    entry_id = wykop_api.microblog.get_entries(limit=1, sort="hot", last_update=24)[
+        "data"
+    ][0]["id"]
+    logging.info("Getting hottest entry with id: %s", entry_id)
+    return entry_id
+
+
+@pytest.fixture(scope="class")
+def hottest_microblog_comment_entry_id(
+    wykop_api: WykopAPI, hottest_microblog_entry_id: int
+) -> CommentID:
+    comment = wykop_api.microblog_comments.get_comments(hottest_microblog_entry_id)[
+        "data"
+    ][0]
+
+    return CommentID(entry_id=hottest_microblog_entry_id, comment_id=comment["id"])

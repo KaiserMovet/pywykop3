@@ -18,14 +18,8 @@ def save_token(token):
 
 
 def main(token: str) -> str | None:
-    api = WykopAPI(
-        refresh_token=token,
-    )
-    # res = api.microblog.get_entry(77759901)
-    # res = api.microblog.get_entries(page="d64PN2w0tp6n", sort="newest", limit=1)
-    res = api.microblog.get_newer_entries_amount(77888607)
-    pprint(res)
-    pprint(len(res["data"]))
+    api = WykopAPI(refresh_token=token)
+    print(api.header)
     return api.refresh_token
 
 

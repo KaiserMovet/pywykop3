@@ -1,7 +1,7 @@
 from typing import Literal, cast
 
 from .methods import HttpMethod
-from .sub_api import DictPaginatedResponse, DictResponse, SubApi
+from .sub_api import DictLoggedPaginatedResponse, DictResponse, SubApi
 from .utils import NotEmptyDict
 
 
@@ -14,7 +14,7 @@ class ApiMicroblog(SubApi):
         bucket: str | None = None,
         sort: Literal["newest", "active", "hot"] = "hot",
         last_update: Literal[1, 2, 3, 6, 12, 24] = 12,
-    ) -> DictPaginatedResponse[list]:
+    ) -> DictLoggedPaginatedResponse[list]:
         params: dict[str, str | int | None] = NotEmptyDict()
         params["page"] = page
         params["limit"] = limit
@@ -23,7 +23,7 @@ class ApiMicroblog(SubApi):
         params["category"] = category
         params["bucket"] = bucket
         return cast(
-            DictPaginatedResponse[list],
+            DictLoggedPaginatedResponse[list],
             self.send_request(HttpMethod.GET, url_parts=["entries"], params=params),
         )
 
@@ -126,7 +126,7 @@ class ApiMicroblog(SubApi):
         self,
         entry_id: int,
         page: int | str | None = None,
-    ) -> DictPaginatedResponse[list]:
+    ) -> DictLoggedPaginatedResponse[list]:
         """_summary_
 
         Args:
@@ -136,13 +136,13 @@ class ApiMicroblog(SubApi):
             Defaults to None.
 
         Returns:
-            DictPaginatedResponse: _description_
+            DictLoggedPaginatedResponse: _description_
         """
         params: dict[str, str | int | None] = NotEmptyDict()
         params["page"] = page
 
         return cast(
-            DictPaginatedResponse[list],
+            DictLoggedPaginatedResponse[list],
             self.send_request(
                 HttpMethod.GET, url_parts=["entries", entry_id, "votes"], params=params
             ),
@@ -168,11 +168,11 @@ class ApiMicroblog(SubApi):
         self,
         entry_id: int,
         category: str | None = None,
-    ) -> DictResponse[int]:
+    ) -> DictResponse[dict]:
         params = NotEmptyDict()
         params["category"] = category
         return cast(
-            DictResponse[int],
+            DictResponse[dict],
             self.send_request(
                 HttpMethod.GET, url_parts=["entries", entry_id, "newer"], params=params
             ),

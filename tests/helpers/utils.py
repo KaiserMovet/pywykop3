@@ -1,9 +1,15 @@
 import logging
 import random
+import re
 import string
 import time
 from contextlib import contextmanager
-from typing import Any
+from typing import Any, NamedTuple
+
+
+class CommentID(NamedTuple):
+    entry_id: int
+    comment_id: int
 
 
 def random_string(length=25) -> str:
@@ -45,10 +51,17 @@ def suppress_exceptions(exception=Exception, *exceptions):
     try:
         yield
     except exceptions as exc:
-        logging.error("Exception was raised", exc_info=exc, stack_info=True)
+        logging.warning("Exception was raised", exc_info=exc)
         pass
 
 
 def get_last_5_voters(entry: dict) -> list[str]:
-    voters = [user["username"] for user in entry["votes"]["users"]]
-    return voters
+    return extract_usernames_from_user_list(entry["votes"]["users"])
+
+
+def extract_usernames_from_user_list(user_list: list[dict]) -> list[str]:
+    return [user["username"] for user in user_list]
+
+
+def remove_whitespace(text: str) -> str:
+    return re.sub(r"\s+", "", text)

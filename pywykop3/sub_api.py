@@ -10,7 +10,7 @@ class DictResponse(Generic[T], TypedDict):
     data: T
 
 
-class DictPaginationNotLogged(TypedDict):
+class DictPagination(TypedDict):
     per_page: int
     total: int
 
@@ -20,9 +20,14 @@ class DictPaginationLogged(TypedDict):
     prev: str | None
 
 
+class DictLoggedPaginatedResponse(Generic[T], TypedDict):
+    data: T
+    pagination: DictPagination | DictPaginationLogged
+
+
 class DictPaginatedResponse(Generic[T], TypedDict):
     data: T
-    pagination: DictPaginationNotLogged | DictPaginationLogged
+    pagination: DictPagination
 
 
 class SubApi:

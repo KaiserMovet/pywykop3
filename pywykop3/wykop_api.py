@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import Any
 
 import requests
@@ -6,6 +5,7 @@ from requests.compat import urljoin
 
 from .methods import HttpMethod
 from .sub_api_microblog import ApiMicroblog
+from .sub_api_microblog_comment import ApiMicroblogComment
 
 
 class WykopConnectorException(Exception): ...
@@ -50,6 +50,7 @@ class WykopAPI:
         self._set_token()
 
         self.microblog = ApiMicroblog(self)
+        self.microblog_comments = ApiMicroblogComment(self)
 
     @property
     def header(self) -> dict[str, str]:
